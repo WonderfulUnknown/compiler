@@ -39,8 +39,9 @@ delim       [ \t\n]
 delims      {delim}+
 digit       [0-9]
 letter      [A-Za-z]
-NUMBER      -?{digit}+(\.{digit}+)?([eE][-+]?{digit}+)?
+number      -?{digit}+(\.{digit}+)?([eE][-+]?{digit}+)?
 ID          ({letter}|[_])({letter}|{digit}|[_])*
+annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 
 %%
 {delims}  {/*do nothing*/}
@@ -87,9 +88,9 @@ return  {cout<<"RETURN\t"<<"return\t"<<endl;}
 {ID}        {yyvalue=set_table();
             cout<<"ID\t"<<symbol_table[(int)yyvalue]<<"\t"<<yyvalue<<"\t"<<endl;}
             //yyleng=strlen(yytext)
-{NUMBER}    {yyvalue=getnumber();
-            cout<<"NUMBER\t"<<yyvalue<<"\t"<<yyvalue<<"\t"<<endl;}
-            // cout<<"NUMBER\t";
+{number}    {yyvalue=getnumber();
+            cout<<"number\t"<<yyvalue<<"\t"<<yyvalue<<"\t"<<endl;}
+            // cout<<"number\t";
             // for(int i=0;i<yyleng;i++)
             //     cout<<yytext[i];
             // cout<<"\t";
@@ -120,34 +121,34 @@ int token::set_table()
 }
 double token::getnumber()
 {
-   double tokenvalue=0.0;
-   int i=0,flag=0,count=0,temp=1;
-   if(yytext[0]=='-')
-        i++;
-   for(int i=0;i<yyleng;i++){
-       if(yytext[i]=='.'){
-           flag=1;
-           count=i;
-           break;
-       }
-   }
-   if(flag){
-        for(;i<count;i++)
-            tokenvalue=tokenvalue*10 + yytext[i]-'0';
-        for(i=count+1;i<yyleng;i++){
-            tokenvalue=tokenvalue*10 + yytext[i]-'0';
-            temp*=10;
-        }
-        tokenvalue/=temp;
-   }
-   else{
-        for(;i<yyleng;i++)
-            tokenvalue=tokenvalue*10 + yytext[i]-'0';
-   }
-   if(yytext[0]=='-')
-        return 0-tokenvalue;
-   return tokenvalue;
-    // return atof(yytext);
+//    double tokenvalue=0.0;
+//    int i=0,flag=0,count=0,temp=1;
+//    if(yytext[0]=='-')
+//         i++;
+//    for(int i=0;i<yyleng;i++){
+//        if(yytext[i]=='.'){
+//            flag=1;
+//            count=i;
+//            break;
+//        }
+//    }
+//    if(flag){
+//         for(;i<count;i++)
+//             tokenvalue=tokenvalue*10 + yytext[i]-'0';
+//         for(i=count+1;i<yyleng;i++){
+//             tokenvalue=tokenvalue*10 + yytext[i]-'0';
+//             temp*=10;
+//         }
+//         tokenvalue/=temp;
+//    }
+//    else{
+//         for(;i<yyleng;i++)
+//             tokenvalue=tokenvalue*10 + yytext[i]-'0';
+//    }
+//    if(yytext[0]=='-')
+//         return 0-tokenvalue;
+//    return tokenvalue;
+    return atof(yytext);
 }
 int main(void)
 {
