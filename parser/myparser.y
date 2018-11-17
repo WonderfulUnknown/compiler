@@ -5,8 +5,10 @@ ParserWizard generated YACC file.
 
 Date: 2018年11月15日
 ****************************************************************************/
-
 #include "mylexer.h"
+#include <iostream>
+#include <string.h>
+using namespace std;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,30 @@ Date: 2018年11月15日
 }
 
 // place any declarations here
+//myparser.h define excpet:
+//DOUBLE FLOAT BOOL UNKNOWN BREAK RETURN
+%token INT DOUBLE FLOAT CHAR BOOL VOID
+%token PLUS MINUS MUL DIV MOD INC DEC
+%token EQ GT LT GE LE NEQ
+%token INAD IOR XOR NOT SHL SHR AND OR OPPOSITE
+%token IF ELSE WHILE FOR BREAK RETURN
+%token ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON
+%token ID NUMBER UNKNOWN
+
+%left COMMA
+%right ASSIGN
+%left OR
+%left AND
+%left IOR
+%left XOR
+%left INAD 
+%left EQ NEQ
+%left LT LE GT GE
+%left SHL SHR 
+%left PLUS MINUS
+%left MUL DIV MOD
+%right OPPOSITE NOT 
+%left LSBRACE RSBRACE LPRACE RPRACE 
 
 %%
 
