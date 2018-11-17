@@ -81,6 +81,12 @@ void    {return VOID;}
 "%"     {return MOD;}
 "++"    {return INC;}
 "--"    {return DEC;}
+"&"     {return INAD;}
+"|"     {return IOR;}
+"^"     {return XOR;}
+"~"     {return NOT;}
+"<<"    {return SHL;}
+">>"    {return SHR;}
 
 //关系运算符
 "=="    {return EQ;}
@@ -91,12 +97,6 @@ void    {return VOID;}
 "!="    {return NEQ;}
 
 //逻辑运算符
-"&"     {return INAD;}
-"|"     {return IOR;}
-"^"     {return XOR;}
-"~"     {return NOT;}
-"<<"    {return SHL;}
-">>"    {return SHR;}
 "&&"    {return AND;}
 "||"    {return OR;}
 "!"     {return OPPOSITE;}
@@ -110,6 +110,7 @@ break   {return BREAK;}
 return  {return RETURN;}
 
 //其他符号
+main 	{return MAIN;}
 "="     {return ASSIGN;}
 "{"     {return LBRACE;}
 "}"     {return RBRACE;}
