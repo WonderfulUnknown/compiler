@@ -73,7 +73,7 @@ using namespace std;
 
 // place your YACC rules here (there must be at least one)
 
-//??main?????
+//定义main函数
 c_program
 	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
 	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
@@ -83,13 +83,13 @@ c_program
 	|INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE	{$$=$7;}
 	;
 
-//????????
+//定义代码段
 code
 	:stmt 		{$$=$1;}
 	|code stmt	{$$=$1;}
 	;
 
-//???????
+//定义语句
 stmt
 	:expr SIMICOLON			{$$=$1;}
 	|asgn_stmt SIMICOLON	{$$=$1;}
@@ -101,41 +101,37 @@ stmt
 	|output_stmt SIMICOLON	{$$=$1;}
 	;
 
-//????
+//定义类型
 type
 	:INT |DOUBLE |FLOAT |CHAR |BOOL |VOID
 	;
 
-//???????
+//定义算术运算符
 ari_op
 	:PLUS |MINUS |MUL |DIV |MOD |INC |DEC 
 	|INAD |IOR |XOR |NOT |SHL |SHR 
 	;
 
-//???????
+//定义关系运算符
 rel_op
 	:EQ |GT |LT |GE |LE |NEQ
 	;
 
-//???????
+//定义逻辑运算符
 log_op
 	:AND |OR |OPPOSITE
 	;
 
-//??id
+//定义id
 id
-	//???????
-
-	//????????id
-	//???id???????
-	//????????????????
+	//避免左递归
 	:ID
 	|ID COMMA id
 	|asgn_stmt
 	|asgn_stmt COMMA id
 	;
 
-//?????
+//定义表达式
 expr 
 	:expr ari_op expr
 	|expr rel_op expr	
@@ -144,43 +140,41 @@ expr
 	|NUMBER			{$$=$1;}
 	;
 
-//??????
+//定义赋值语句
 asgn_stmt
 	:id ASSIGN expr
 	;
 
-//??????
+//定义声明语句
 dec_stmt
 	:type id SIMICOLON
 	;
 
-//???if,while,for?????????{}???
+//没考虑if,while,for后不加{}只有一行的情况
 
-//??if??
+//定义if语句
 if_stmt
-	//??DFA?NFA???
-	//?????else if???
+	//考虑DFA.NFA
+	//没考虑else if的实现
 	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
 
-//??while??
+//定义while语句
 while_stmt 
 	:WHILE LPRACE expr RPRACE LBRACE stmt RBRACE
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	;
 	
-//??for??
+//定义for语句
 for_stmt 
-	//?????for????????
-	//????????for????????
 	//:FOR LPRACE for_1 SIMICOLON for_2 SIMICOLON for_3 RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE for_1 SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	;
 
 for_1
-	//????
+	//可能为空
 	:
 	|asgn_stmt
 	|id
@@ -194,8 +188,8 @@ for_1
 // 	:expr
 // 	;
 
-//??????
-//??????
+//定义输入语句
+//定义输出语句
 %%
 
 /////////////////////////////////////////////////////////////////////////////
