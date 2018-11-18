@@ -5,17 +5,17 @@ ParserWizard generated Lex file.
 
 Date: 2018年11月15日
 ****************************************************************************/
-#include "myparser.h"
 #include<iostream>
-#include<stdio.h>
 #include<string.h>
-#include<cstring>
-#include<fstream>
-#include<stdlib.h> 
+
+#include "myparser.h"
+#include"ParseTree.h"
+
 using namespace std;
-int number=0; //记录符号表中储存的个数
-char symbol_table[30][1000];//符号表
-double yyvalue=0;
+
+//int number=0; //记录符号表中储存的个数
+//char symbol_table[30][1000];//符号表
+//double yyvalue=0;
 %}
 
 /////////////////////////////////////////////////////////////////////////////

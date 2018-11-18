@@ -5,9 +5,12 @@ ParserWizard generated YACC file.
 
 Date: 2018年11月15日
 ****************************************************************************/
-#include "mylexer.h"
 #include <iostream>
 #include <string.h>
+
+#include "mylexer.h"
+#include"ParseTree.h"
+
 using namespace std;
 %}
 
@@ -189,7 +192,9 @@ for_1
 // 	;
 
 //定义输入语句
+//input_stmt
 //定义输出语句
+//output_stmt
 %%
 
 /////////////////////////////////////////////////////////////////////////////
