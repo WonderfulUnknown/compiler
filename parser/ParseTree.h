@@ -60,7 +60,7 @@ enum data_type
     Void;
 }
 
-class tree_node_attr
+class Tree_node_attr
 {
     //考虑是否赋初值
     int op_type;
@@ -69,21 +69,22 @@ class tree_node_attr
     int address;//id在符号表中的位置
 }
 
-class tree_node
+class Tree_node
 {
-    class tree_node *child[max_child];
-    class tree_node_attr attr;
-    // class tree_node parent;
-    // class tree_node *brother;
+    class Tree_node *child[max_child];
+    int child_num;//孩子结点的数量
+    class Tree_node_attr attr;
+    // class Tree_node parent;
+    // class Tree_node *brother;
 
     int stmt_type;
     int node_num;//结点对于整棵树的编号
     // int line;
 }
 
-class tree
+class Tree
 {
-    class tree_node root;
+    class Tree_node root;
     int node_num;//树中结点数量
 
     void insert();
@@ -91,7 +92,14 @@ class tree
     void gettype();
 }
 
-// class symbol_table
-// {
-//     string id;//
-// }
+class Symbol_table
+{
+    char symbol[30][1000];//符号表
+    int number=0; //记录符号表中储存的个数
+
+   // int set_table;
+   // int get_adr(string id);
+   // int insert(string id)
+    int search_table(string id);
+    int get_num(char*);
+}
