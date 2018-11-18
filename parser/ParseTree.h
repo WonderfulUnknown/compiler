@@ -60,7 +60,7 @@ enum data_type
     Void;
 }
 
-class Tree_node_attr
+class Node_attr
 {
     //考虑是否赋初值
     int op_type;
@@ -82,14 +82,16 @@ class Tree_node
     // int line;
 }
 
-class Tree
+class Parse_tree
 {
     class Tree_node root;
     int node_num;//树中结点数量
 
-    void insert();
-    void search();
-    void gettype();
+    //需要表明创建的结点是什么类型，来确定需要输入哪些值
+    void create_node(string type,Node_attr attr,struct Tree_node[]);
+    // void insert();
+    // void search();
+    // void gettype();
 }
 
 class Symbol_table

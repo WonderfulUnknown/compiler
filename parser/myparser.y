@@ -100,8 +100,8 @@ stmt
 	|if_stmt SIMICOLON		{$$=$1;}
 	|while_stmt SIMICOLON	{$$=$1;}
 	|for_stmt SIMICOLON		{$$=$1;}
-	|input_stmt SIMICOLON	{$$=$1;}
-	|output_stmt SIMICOLON	{$$=$1;}
+	//|input_stmt SIMICOLON	{$$=$1;}
+	//|output_stmt SIMICOLON	{$$=$1;}
 	;
 
 //定义类型
@@ -139,8 +139,8 @@ expr
 	:expr ari_op expr
 	|expr rel_op expr	
 	|expr log_op expr	
-	|LE expr RE		{$$=$2;}
-	|NUMBER			{$$=$1;}
+	|LPRACE expr RPRACE		{$$=$2;}
+	|NUMBER					{$$=$1;}
 	;
 
 //定义赋值语句
@@ -159,13 +159,14 @@ dec_stmt
 if_stmt
 	//考虑DFA.NFA
 	//没考虑else if的实现
-	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
+	:IF LPRACE expr RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	|IF LPRACE expr RPRACE LBRACE stmt RBRACE
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
+	;
 
 //定义while语句
-while_stmt 
+while_stmt       
 	:WHILE LPRACE expr RPRACE LBRACE stmt RBRACE
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	;

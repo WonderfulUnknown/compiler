@@ -3,11 +3,11 @@
 
 using namespace std;
 
-Tree tree;
+Parse_tree tree;
 Symbol_table table;
 
 //遍历符号表，如果id在其中就得到id的位置，不在就填入
-int symbol_table::search_table(string id)
+int Symbol_table::search_table(string id)
 {
     for (int i = 0; i < table.number; i++)
     {
@@ -20,4 +20,11 @@ int symbol_table::search_table(string id)
         table.number++;
     }
     return i;
+}
+
+int Parse_tree::set_node(string type,Node_attr attr,struct Tree_node[])
+{
+    Parse_tree *tree = new Parse_tree;
+
+    tree.
 }

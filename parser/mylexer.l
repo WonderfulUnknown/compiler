@@ -42,7 +42,13 @@ using namespace std;
 
 // place any declarations here
 
-
+delim       [ \t\n]
+delims      {delim}+
+digit       [0-9]
+letter      [A-Za-z]
+number      -?{digit}+(\.{digit}+)?([eE][-+]?{digit}+)?
+id          ({letter}|[_])({letter}|{digit}|[_])*
+annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 %%
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,18 +61,10 @@ using namespace std;
 
 // place your Lex rules here
 
-delim       [ \t\n]
-delims      {delim}+
-digit       [0-9]
-letter      [A-Za-z]
-number      -?{digit}+(\.{digit}+)?([eE][-+]?{digit}+)?
-id          ({letter}|[_])({letter}|{digit}|[_])*
-annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
-
-%%
 {delims}  {/*do nothing*/}
 //数据类型
-int     {return INT;}
+int         {return INT;}
+//int     {return INT;}
 double 	{return DOUBLE;}
 float   {return FLOAT;}
 char    {return CHAR;}
@@ -123,12 +121,13 @@ main 	{return MAIN;}
 ":"     {return COLON;}
 
 //其他 
-{id}        {yyvalue=set_table();
-            return ID;}
+{id}        {//yyvalue=set_table();
+            //return ID;
+            }
             //yyleng=strlen(yytext)
 {number}    {yyvalue=atof(yytext);
             return NUMBER;}
-{annotation}{}
+//{annotation}{}
 .           {return UNKNOWN;}
 
 %%
