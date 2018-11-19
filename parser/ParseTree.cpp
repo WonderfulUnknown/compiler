@@ -32,4 +32,5 @@ void Parse_tree::set_node(int type, Node_attr attr, struct Tree_node[])
 	node->child_num = sizeof(Tree_node);
 	//node->child[] = Tree_node[];//给孩子节点赋值
 	//tree->node_num++;
+	
 }
