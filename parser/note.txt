@@ -4,7 +4,18 @@
 语法树未建立
 更多的注意项在代码注释中
 
-//////////////
+！！！！！！！！！！！！！！！！！！！！
+ctrl + f 可能 需要 考虑     
+等关键字
+即可看到已思考未实现且可能潜在的问题
+
+
+to_do:
+后续还需要对不同的stmt_type进行不同的操作
+
+
+
+////////
 结点需要具有的属性：
 语义上分析属于该语句在做什么
 1.类型说明符 输出类型 无孩子结点
@@ -28,3 +39,27 @@
 考虑符号表处理的扩充
 1.完成语法分析后，符号表项应增加哪些标识符的属性，保存语法分析的结果
 2.如何扩充符号表数据结构，Yacc程序如何与Lex程序交互，正确填写符号表项
+
+
+以一个简单的C源程序验证你的语法分析器，可以文本方式输出语法树结构，以节点编号输出父子关系，来验证分析器的正确性，如下例：
+main()
+{
+	int a, b;
+	if (a == 0)
+		a = b + 1;
+}
+可能的输出为：
+0 : Type Specifier,     integer,       Children:
+1 : ID Declaration,     symbol: a      Children:
+2 : ID Declaration,     symbol: b      Children:
+3 : Var Declaration,                   Children: 0    1    2
+4 : ID Declaration,     symbol: a      Children:
+5 : Const Declaration,  value:0,       Children:
+6 : Expr,               op: ==,        Children: 4    5
+7 : ID Declaration,     symbol: a      Children:
+8 : ID Declaration,     symbol: b      Children:
+9 : Const Declaration,  value:1,       Children:
+10: Expr,               op: +,         Children: 8    9
+11: Expr,               op: =,         Children: 7    10
+12: if statement,                      Children: 6    11
+13: compound statement,                Children: 3	  12

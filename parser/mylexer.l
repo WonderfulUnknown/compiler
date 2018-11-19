@@ -9,13 +9,13 @@ Date: 2018年11月15日
 #include<string.h>
 
 #include "myparser.h"
-#include"ParseTree.h"
+#include "ParseTree.h"
 
 using namespace std;
 
-//int number=0; //记录符号表中储存的个数
-//char symbol_table[30][1000];//符号表
-//double yyvalue=0;
+// Parse_tree tree;
+Tree_node node;
+Symbol_table table;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,9 +63,8 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 
 {delims}  {/*do nothing*/}
 //数据类型
-int         {return INT;}
-//int     {return INT;}
-double 	{return DOUBLE;}
+int     {return INT;}
+double  {return DOUBLE;}
 float   {return FLOAT;}
 char    {return CHAR;}
 bool    {return BOOL;}
@@ -108,7 +107,7 @@ break   {return BREAK;}
 return  {return RETURN;}
 
 //其他符号
-main 	{return MAIN;}
+main    {return MAIN;}
 "="     {return ASSIGN;}
 "{"     {return LBRACE;}
 "}"     {return RBRACE;}
@@ -121,13 +120,17 @@ main 	{return MAIN;}
 ":"     {return COLON;}
 
 //其他 
-{id}        {//yyvalue=set_table();
-            //return ID;
+{id}        {
+               //通过yylval将id在符号表中的地址传给.y
+               yylval = table.search_table(yytext);//不在符号表中就填入
+               return ID;
             }
             //yyleng=strlen(yytext)
-{number}    {yyvalue=atof(yytext);
-            return NUMBER;}
-//{annotation}{}
+{number}    { 
+               yyvalue = atof(yytext);
+               return NUMBER;
+            }
+{annotation}{}
 .           {return UNKNOWN;}
 
 %%

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ParseTree.h"
 #include <string.h>
+
 using namespace std;
 
 Parse_tree tree;
@@ -23,14 +24,32 @@ int Symbol_table::search_table(char *id)
 	return i;
 }
 
-void Parse_tree::set_node(int type, Node_attr attr, struct Tree_node[])
+void Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int address)
 {
 	Tree_node *node = new Tree_node;
 
-	node->stmt_type = type;
-	node->attr = attr;
-	node->child_num = sizeof(Tree_node);
-	//node->child[] = Tree_node[];//给孩子节点赋值
-	//tree->node_num++;
-	
+	node->stmt_type = stmt_type;
+	node->op_type = op_type;
+	node->value = value;
+	node->symbol = symbol;
+	node->address = address;
+
+	tree->node_count++;
+	node->node_num = tree->node_count;
+}
+
+// string get_name(int address)
+// {
+// 	return table.symbol[address];
+// }
+
+// void Tree_node::add_child(struct Tree_node *parent,struct Tree_node *child)
+// {
+// 	parent.first_child = child;
+// }
+
+//到了用的时候再实现
+void Tree_node::search_child(struct Tree_node *parent)
+{
+
 }
