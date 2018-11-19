@@ -1,5 +1,5 @@
-#include"mylexer.h"
-#include"myparser.h"
+#pragma once
+
 
 // const int max_table = 1024;
 // const int max_child = 10;
@@ -22,8 +22,8 @@ enum expr_type
 	ari_expr = 0,
 	rel_expr,
 	log_expr,
-	expr,
-	number
+//	expr,
+//	number
 };
 
 //enum op_type

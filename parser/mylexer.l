@@ -5,14 +5,14 @@ ParserWizard generated Lex file.
 
 Date: 2018年11月15日
 ****************************************************************************/
-#include<iostream>
-#include<string.h>
+// #include <iostream>
+#include <string.h>
 
 #include "myparser.h"
-#include "ParseTree.h"
 
-using namespace std;
+//using namespace std;
 
+//#include "ParseTree.h"
 // Parse_tree tree;
 Tree_node node;
 Symbol_table table;
@@ -61,7 +61,8 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 
 // place your Lex rules here
 
-{delims}  {/*do nothing*/}
+{delims}		{/*do nothing*/}
+{annotation}	{}
 //数据类型
 int     {return INT;}
 double  {return DOUBLE;}
@@ -125,12 +126,13 @@ main    {return MAIN;}
                yylval = table.search_table(yytext);//不在符号表中就填入
                return ID;
             }
+            
             //yyleng=strlen(yytext)
 {number}    { 
-               yyvalue = atof(yytext);
+               yylval = atof(yytext);
                return NUMBER;
             }
-{annotation}{}
+
 .           {return UNKNOWN;}
 
 %%

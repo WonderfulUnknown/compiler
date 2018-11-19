@@ -18,8 +18,8 @@
 * myparser.h
 * C++ header file generated from myparser.y.
 * 
-* Date: 11/20/18
-* Time: 00:41:10
+* Date: 11/19/18
+* Time: 23:13:35
 * 
 * AYACC Version: 2.07
 ****************************************************************************/
@@ -61,9 +61,9 @@ protected:
 	virtual void yycopyattribute(void YYFAR* dest, const void YYFAR* src, int count);
 
 public:
-#line 27 ".\\myparser.y"
+#line 9 ".\\myparser.y"
 
-	// place any extra class members here
+    // place any extra class members here
 
 #line 69 "myparser.h"
 };
@@ -72,59 +72,25 @@ public:
 #define YYPARSERNAME myparser
 #endif
 
-#line 42 ".\\myparser.y"
+#line 23 ".\\myparser.y"
 
 #ifndef YYSTYPE
-#define YYSTYPE Tree_node*
+#define YYSTYPE double
 #endif
 
 #line 82 "myparser.h"
-#define INT 257
-#define DOUBLE 258
-#define FLOAT 259
-#define CHAR 260
-#define BOOL 261
-#define VOID 262
-#define PLUS 263
-#define MINUS 264
-#define MUL 265
-#define DIV 266
-#define MOD 267
-#define INC 268
-#define DEC 269
-#define INAD 270
-#define IOR 271
-#define XOR 272
-#define NOT 273
-#define SHL 274
-#define SHR 275
-#define EQ 276
-#define GT 277
-#define LT 278
-#define GE 279
-#define LE 280
-#define NEQ 281
-#define AND 282
-#define OR 283
-#define OPPOSITE 284
-#define IF 285
-#define ELSE 286
-#define WHILE 287
-#define FOR 288
-#define BREAK 289
-#define RETURN 290
-#define MAIN 291
-#define ASSIGN 292
-#define LBRACE 293
-#define RBRACE 294
-#define LPRACE 295
-#define RPRACE 296
-#define LSBRACE 297
-#define RSBRACE 298
-#define COMMA 299
-#define SIMICOLON 300
-#define COLON 301
-#define ID 302
-#define NUMBER 303
-#define UNKNOWN 304
+#define NUMBER 257
+#define ID 258
+#define PLUS 259
+#define MINUS 260
+#define TIMES 261
+#define OVER 262
+#define LP 263
+#define RP 264
+#define EOL 265
+#define COMMENT 266
+#define INT 267
+#define DOUBLE 268
+#define CHAR 269
+#define UMINUS 270
 #endif

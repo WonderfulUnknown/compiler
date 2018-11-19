@@ -34,8 +34,8 @@ void Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int ad
 	node->symbol = symbol;
 	node->address = address;
 
-	tree->node_count++;
-	node->node_num = tree->node_count;
+	tree.node_count++;
+	node->node_num = tree.node_count;
 }
 
 // string get_name(int address)

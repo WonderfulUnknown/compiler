@@ -18,8 +18,8 @@
 * mylexer.h
 * C++ header file generated from mylexer.l.
 * 
-* Date: 11/20/18
-* Time: 00:41:10
+* Date: 11/19/18
+* Time: 23:13:34
 * 
 * ALex Version: 2.07
 ****************************************************************************/
@@ -57,12 +57,6 @@ protected:
 	virtual int yyaction(int action);
 
 public:
-#line 28 ".\\mylexer.l"
-
-	// place any extra class members here
-   int set_table();
-
-#line 66 "mylexer.h"
 };
 
 #ifndef YYLEXERNAME

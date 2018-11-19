@@ -5,14 +5,14 @@ ParserWizard generated YACC file.
 
 Date: 2018Äê11ÔÂ15ÈÕ
 ****************************************************************************/
-#include <iostream>
-#include <string.h>
+// #include <iostream>
+// #include <string.h>
 
 #include "mylexer.h"
-#include"ParseTree.h"
 
-using namespace std;
 
+//using namespace std;
+//#include "ParseTree.h"
 Parse_tree tree;
 
 %}
