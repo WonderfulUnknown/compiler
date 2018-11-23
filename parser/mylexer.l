@@ -13,8 +13,9 @@ Date: 2018年11月15日
 //using namespace std;
 
 //#include "ParseTree.h"
+#include "Tree.h"
 // Parse_tree tree;
-Tree_node node;
+TreeNode node;
 Symbol_table table;
 %}
 
@@ -27,7 +28,6 @@ Symbol_table table;
 // class definition
 {
 	// place any extra class members here
-   int set_table();
 }
 
 // constructor
@@ -57,6 +57,7 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 %{
 	// extract yylval for use later on in actions
 	YYSTYPE YYFAR& yylval = *(YYSTYPE YYFAR*)yyparserptr->yylvalptr;
+	yylval = &node;
 %}
 
 // place your Lex rules here
@@ -123,13 +124,15 @@ main    {return MAIN;}
 //其他 
 {id}        {
                //通过yylval将id在符号表中的地址传给.y
-               yylval = table.search_table(yytext);//不在符号表中就填入
-               return ID;
+               //yylval = table.search_table(yytext);//不在符号表中就填入
+               //yylval = &node;
+			   yylval->address = table.search_table(yytext);
+			   return ID;
             }
             
             //yyleng=strlen(yytext)
 {number}    { 
-               yylval = atof(yytext);
+               yylval->attr.val = atof(yytext);
                return NUMBER;
             }
 

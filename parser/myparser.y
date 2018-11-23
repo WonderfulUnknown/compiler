@@ -1,20 +1,21 @@
 %{
 /****************************************************************************
-myparser.y
-ParserWizard generated YACC file.
+myparser->y
+ParserWizard generated YACC file->
 
 Date: 2018年11月15日
 ****************************************************************************/
-// #include <iostream>
-// #include <string.h>
+#include <iostream>
+// #include <string->h>
 
 #include "mylexer.h"
 
 
-//using namespace std;
-//#include "ParseTree.h"
-Parse_tree tree;
-
+using namespace std;
+//#include "Parsenode.h"
+#include "Tree.h"
+//Parse_tree tree;
+TreeNode* node;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,13 +42,13 @@ Parse_tree tree;
 // attribute type
 %include {
 #ifndef YYSTYPE
-#define YYSTYPE Tree_node*
+#define YYSTYPE TreeNode*
 #endif
 }
 
 // place any declarations here
 
-//myparser.h define excpet:
+//myparser->h define excpet:
 //DOUBLE FLOAT BOOL UNKNOWN BREAK RETURN
 %token INT DOUBLE FLOAT CHAR BOOL VOID 
 %token PLUS MINUS MUL DIV MOD INC DEC INAD IOR XOR NOT SHL SHR 
@@ -116,7 +117,14 @@ type
 	|BOOL 	{$$=$1;}
 	|VOID	{$$=$1;}
 	;
+//定义op
 
+op
+	:ari_op	{$$=$1;}
+	|rel_op	{$$=$1;}
+	|log_op	{$$=$1;}
+	;
+	
 //定义算术运算符
 ari_op
 	:PLUS	{$$=$1;}
@@ -157,7 +165,7 @@ id
 	:ID
 	{	
 		//可能需要考虑孩子的问题	
-		$$ = tree.set_node(dec_stmt,-1,-1,$s1,yylval);
+		$$ = node.stmt_node(dec_stmt,-1,-1,$s1,yylval);
 	}
 	|ID COMMA id
 	{		
@@ -173,31 +181,17 @@ id
 
 //定义表达式
 expr 
-	:expr ari_op expr		
+	:expr op expr		
 	{
-		$$ = tree.set_node(expr,$2,-1,-1,-1);
-		//可能需要考虑$$是否能.
-		$$.first_child = $1;
-		//可能需要考虑expr已有兄弟节点
-		$1.brother = $3;
-	}
-	|expr rel_op expr	
-	{
-		$$ = tree.set_node(expr,$2,-1,-1,-1);
-		$$.first_child = $1;
-		$1.brother = $3;
-	}
-	|expr log_op expr	
-	{
-		$$ = tree.set_node(expr,$2,-1,-1,-1);
-		$$.first_child = $1;
-		$1.brother = $3;
+		$$ = node.expr_node($2);
+		$$->child[0] = $1;
+		$$->child[1] = $3;
 	}
 	|LPRACE expr RPRACE		{$$=$2;}
-	//= =为此.h文件type多添加了number类型
+	//= =为此->h文件type多添加了number类型
 	|NUMBER	
 	{
-		$$ = tree.set_node(number,-1,$s1,-1,-1);
+		$$ = node.stmt_node(number,-1,$s1,-1,-1);
 	}
 	;
 
@@ -205,7 +199,7 @@ expr
 asgn_stmt
 	:id ASSIGN expr
 	{
-		$$ = tree.set_node(asgn_stmt,-1,$s3,$s1,yylval);
+		$$ = node.expr_node($2);
 	}
 	|asgn_stmt COMMA id
 	{
@@ -216,44 +210,44 @@ asgn_stmt
 dec_stmt
 	:type id 
 	{
-		//type中的值都是mylexer.h中define的值,注意
-		$$ = tree.set_node(dec_stmt,$1,-1,$s2,yylval);
+		//type中的值都是mylexer->h中define的值,注意
+		///////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		$$ = node.stmt_node(dec_stmt,$1,-1,$s2,yylval);
 	}
 	;
 
 //没考虑if,while,for后不加{}只有一行的情况
 //可能需要对能作为判断条件的语句再补充
 
-//void set_node(int stmt_type,int op_type,int value,char symbol,int address)
 //定义if语句
 if_stmt
-	//考虑DFA.NFA
+	//考虑DFA->NFA
 	//没考虑else if的实现
 	:IF LPRACE expr RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(if_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;
-		$s6.brother = $s10;
+		$$ = node.stmt_node(if_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;
+		$$->child[2] = $s10;
 	}
 	|IF LPRACE expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(if_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;
+		$$ = node.stmt_node(if_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(if_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;
-		$s6.brother = $s10;
+		$$ = node.stmt_node(if_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;
+		$$->child[2] = $s10;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(if_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;
+		$$ = node.stmt_node(if_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;
 	}
 	;
 
@@ -261,15 +255,15 @@ if_stmt
 while_stmt       
 	:WHILE LPRACE expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(while_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;		
+		$$ = node.stmt_node(while_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;		
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(while_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s6;		
+		$$ = node.stmt_node(while_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s6;		
 	}
 	;
 	
@@ -280,19 +274,19 @@ for_stmt
 	//:FOR LPRACE for_1 SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE asgn_stmt SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(for_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s5;
-		$s5.brother = $s7;
-		$s7.brother = $s10;
+		$$ = node.stmt_node(for_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s5;
+		$$->child[2] = $s7;
+		$$->child[3]= $s10;
 	}
 	|FOR LPRACE id SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = tree.set_node(for_stmt,-1,-1,-1,-1);
-		$$.first_child = $s3;
-		$s3.brother = $s5;
-		$s5.brother = $s7;
-		$s7.brother = $s10;		
+		$$ = node.stmt_node(for_stmt);
+		$$->child[0] = $s3;
+		$$->child[1] = $s5;
+		$$->child[2] = $s7;
+		$$->child[3]= $s10;	
 	}
 	;
 
@@ -325,9 +319,9 @@ int main(void)
 	int n = 1;
 	mylexer lexer;
 	myparser parser;
-	if (parser.yycreate(&lexer)) {
-		if (lexer.yycreate(&parser)) {
-			n = parser.yyparse();
+	if (parser->yycreate(&lexer)) {
+		if (lexer->yycreate(&parser)) {
+			n = parser->yyparse();
 		}
 	}
 	return n;

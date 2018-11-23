@@ -24,9 +24,9 @@ int Symbol_table::search_table(char *id)
 	return i;
 }
 
-void Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int address)
+Tree_node* Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int address)
 {
-	Tree_node *node = new Tree_node;
+	Tree_node* node = new Tree_node;
 
 	node->stmt_type = stmt_type;
 	node->op_type = op_type;
@@ -36,6 +36,7 @@ void Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int ad
 
 	tree.node_count++;
 	node->node_num = tree.node_count;
+	return node;
 }
 
 // string get_name(int address)
@@ -48,8 +49,8 @@ void Parse_tree::set_node(int stmt_type,int op_type,int value,char symbol,int ad
 // 	parent.first_child = child;
 // }
 
-//到了用的时候再实现
-void Tree_node::search_child(struct Tree_node *parent)
-{
-
-}
+////到了用的时候再实现
+//void Tree_node::search_child(struct Tree_node *parent)
+//{
+//
+//}
