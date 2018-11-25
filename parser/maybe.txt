@@ -1,0 +1,32 @@
+
+//TreeNode * TreeNode::simple_exp(void)
+//{
+//	TreeNode * t = term();
+//	while ((token == PLUS) || (token == MINUS))
+//	{
+//		TreeNode * p = newexpNode(OpK);
+//		if (p != NULL) {
+//			p->child[0] = t;
+//			p->attr.op = token;
+//			t = p;
+//			match(token);
+//			node->child[1] = term();
+//		}
+//	}
+//	return node;
+//}
+
+//TreeNode * TreeNode::if_stmt(void)
+//{
+//	TreeNode * t = newStmtNode(IfK);
+//	match(IF);
+//	if (t != NULL) node->child[0] = exp();
+//	match(THEN);
+//	if (t != NULL) node->child[1] = stmt_sequence();
+//	if (token == ELSE) {
+//		match(ELSE);
+//		if (t != NULL) node->child[2] = stmt_sequence();
+//	}
+//	match(END);
+//	return node;
+//}

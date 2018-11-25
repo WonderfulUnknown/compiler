@@ -9,14 +9,10 @@ Date: 2018年11月15日
 #include <string.h>
 
 #include "myparser.h"
-
-//using namespace std;
-
-//#include "ParseTree.h"
 #include "Tree.h"
-// Parse_tree tree;
+
 TreeNode node;
-Symbol_table table;
+ParseTree tree;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -64,7 +60,7 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 // place your Lex rules here
 
 {delims}		   {}
-{newline}      {table.all_line++;}
+{newline}      {tree.all_line++;}
 {annotation}	{}
 
 //myparser.h 中自动给出相应的宏定义
@@ -128,10 +124,7 @@ main    {return MAIN;}
 
 //其他 
 {id}        {
-               //通过yylval将id在符号表中的地址传给.y
-               //yylval = table.search_table(yytext);//不在符号表中就填入
-               //yylval = &node;
-			   yylval->address = table.search_table(yytext);
+			   yylval->address = tree.search_table(yytext);
 			   yylval->attr.name = (yytext);
             yylval->type.exp_type = id;
             return ID;
@@ -140,7 +133,7 @@ main    {return MAIN;}
             //yyleng=strlen(yytext)
 {number}    { 
                yylval->attr.value = atof(yytext);
-               yylval->type.exp_type = number;
+               // yylval->type.exp_type = number;
                return NUMBER;
             }
 

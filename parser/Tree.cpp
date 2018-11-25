@@ -1,15 +1,16 @@
 #include <iostream>
 #include "Tree.h"
+#include<fstream>
 
 using namespace std;
 
-Symbol_table table;
+ParseTree *tree = new ParseTree;
 
 TreeNode * TreeNode::stmt_node(StmtType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++table.all_line;
+		cout << "Out of memory error at line" << ++tree->all_line;
 	else
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
@@ -18,8 +19,10 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 
 		node->node_type = stmt;
 		node->type.stmt_type = type;
-		node->lineno = table.all_line;
+		node->lineno = tree->all_line;
 	}
+
+	print_node(node);
 	return node;
 }
 
@@ -27,66 +30,87 @@ TreeNode * TreeNode::exp_node(ExpType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++table.all_line;
-	else {
-		for (int i = 0; i < MAXCHILDREN; i++) 
+		cout << "Out of memory error at line" << ++tree->all_line;
+	else 
+	{
+		for (int i = 0; i < MAXCHILDREN; i++)
 			node->child[i] = NULL;
 		node->brother = NULL;
 
 		node->node_type = exps;
 		node->type.exp_type = type;
-		node->lineno = table.all_line;
-		node->data_type = Void;
+		node->lineno = tree->all_line;
+		//node->data_type = Void;
 	}
+
+	print_node(node);
 	return node;
 }
 
-//TreeNode * TreeNode::simple_exp(void)
-//{
-//	TreeNode * t = term();
-//	while ((token == PLUS) || (token == MINUS))
-//	{
-//		TreeNode * p = newexpNode(OpK);
-//		if (p != NULL) {
-//			p->child[0] = t;
-//			p->attr.op = token;
-//			t = p;
-//			match(token);
-//			node->child[1] = term();
-//		}
-//	}
-//	return node;
-//}
-
-//TreeNode * TreeNode::if_stmt(void)
-//{
-//	TreeNode * t = newStmtNode(IfK);
-//	match(IF);
-//	if (t != NULL) node->child[0] = exp();
-//	match(THEN);
-//	if (t != NULL) node->child[1] = stmt_sequence();
-//	if (token == ELSE) {
-//		match(ELSE);
-//		if (t != NULL) node->child[2] = stmt_sequence();
-//	}
-//	match(END);
-//	return node;
-//}
-
 //遍历符号表，如果id在其中就得到id的位置，不在就填入
-int Symbol_table::search_table(char *id)
+int ParseTree::search_table(char *id)
 {
-	Symbol_table table;
 	int i = 0;
-	for (; i < table.number; i++)
+	for (; i < tree->table_number; i++)
 	{
-		if (strcmp(table.symbol[i], id) == 0)
+		if (strcmp(tree->symbol_table[i], id) == 0)
 			break;
 	}
-	if (i >= table.number)
+	if (i >= tree->table_number)
 	{
-		strcpy_s(table.symbol[i], strlen(id) + 1, id); //数组长度不加1报错,"\0"
-		table.number++;
+		strcpy_s(tree->symbol_table[i], strlen(id) + 1, id); //数组长度不加1报错,"\0"
+		tree->table_number++;
 	}
 	return i;
+}
+
+void TreeNode::print_node(TreeNode *node)
+{
+	ofstream fout("output.txt");
+	fout.setf(ios_base::left);//左对齐
+
+	fout.width(3);
+	fout << node->node_num << ": ";
+
+	if (node->node_type == stmt)
+	{
+		fout.width(40);
+
+		//string names[8] = { "if_stmt","while_stmt","for_stmt","comp_stmt","input_stmt","output_stmt","var_dec","exp_stmt" };
+		//fout.width(40);
+		//fout << names[p->nodekind_kind];
+		fout << node->type.stmt_type;
+		if (node->type.stmt_type == type_spe)
+			fout << node->attr.data_type;
+	}
+	else
+	{
+		fout.width(20);
+		fout << node->type.exp_type;
+		fout.width(10);
+		switch (node->type.exp_type)
+		{
+		case op:
+			fout << "op: " << node->attr.op;
+		case number:
+			fout << "value: " << node->attr.value;
+		case id:
+			fout << "symbol: " << node->attr.name;
+		}
+	}
+
+	//可能需要考虑idlist的输出
+
+	fout << "Children:";
+	for (int i = 0; i < MAXCHILDREN; i++)
+	{
+		if (node->child[i] == NULL)
+			continue;
+		else
+		{
+			fout << node->child[i]->node_num << " ";
+		}
+		fout << endl;
+	}
+
 }

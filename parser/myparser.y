@@ -3,16 +3,14 @@
 myparser->y
 ParserWizard generated YACC file->
 
-Date: 2018年11月15日
+Date:2018年11月15日
 ****************************************************************************/
 #include <iostream>
-// #include <string->h>
-
 #include "mylexer.h"
-
+#include "Tree.h"
 
 using namespace std;
-#include "Tree.h"
+ParseTree *tree;
 TreeNode *node;
 %}
 
@@ -77,93 +75,203 @@ TreeNode *node;
 // place your YACC rules here (there must be at least one)
 
 //定义main函数
-// c_program
-// 	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
-// 	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
-// 	|VOID MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
-// 	|VOID MAIN LPRACE VOID RPRACE LBRACE code RBRACE{$$=$7;}
-// 	|INT MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
-// 	|INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE	{$$=$7;}
-// 	;
+c_program
+	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
+	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
+	|VOID MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
+	|VOID MAIN LPRACE VOID RPRACE LBRACE code RBRACE{$$=$7;}
+	|INT MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
+	|INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE	{$$=$7;}
+	;
 
 //定义代码段
-// code
-// 	:stmt 		{$$=$1;}
-// 	|code stmt	
-// 	{
-		
-// 	}
-// 	;
+code
+	:stmt 		{$$ = $1;}
+	|code stmt	
+	{
+		tree->root->child[0] = $1;
+		tree->root->child[1] = $2;
+		$$ = tree->root;
+	}
+	;
 
 //定义语句
 stmt
-	:exp SIMICOLON			{$$=$1;}
-	|asgn_stmt SIMICOLON	{$$=$1;}
-	|dec_stmt SIMICOLON		{$$=$1;}
-	|if_stmt SIMICOLON		{$$=$1;}
-	|while_stmt SIMICOLON	{$$=$1;}
-	|for_stmt SIMICOLON		{$$=$1;}
-	// |input_stmt SIMICOLON	{$$=$1;}
-	// |output_stmt SIMICOLON	{$$=$1;}
+	:exp SIMICOLON			{$$ = $1;}
+	|asgn_stmt SIMICOLON	{$$ = $1;}
+	|dec_stmt SIMICOLON		{$$ = $1;}
+	|if_stmt SIMICOLON		{$$ = $1;}
+	|while_stmt SIMICOLON	{$$ = $1;}
+	|for_stmt SIMICOLON		{$$ = $1;}
+	// |input_stmt SIMICOLON	{$$ = $1;}
+	// |output_stmt SIMICOLON	{$$ = $1;}
 	;
 
 //定义类型
 type
-	:INT	{$$=$1;}
-	|DOUBLE {$$=$1;}
-	|FLOAT 	{$$=$1;}
-	|CHAR 	{$$=$1;}
-	|BOOL 	{$$=$1;}
-	|VOID	{$$=$1;}
-	;
-//定义op
+	:INT	
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = INT;
+	}
+	|DOUBLE
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = DOUBLE;
+	}
+	|FLOAT
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = FLOAT;
+	}
+	|CHAR
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = CHAR;
+	}
+	|BOOL
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = BOOL;
+	}
+	|VOID
+	{
+		$$ = node->stmt_node(type_spe);
+		$$->attr.data_type = VOID;
+	};
 
+//定义op
 op
-	:ari_op	{$$=$1;}
-	|rel_op	{$$=$1;}
-	|log_op	{$$=$1;}
+	:ari_op		{$$ = $1;}
+	|rel_op		{$$ = $1;}
+	|log_op		{$$ = $1;}
 	;
-	
+
 //定义算术运算符
 ari_op
-	:PLUS	{$$=$1;}
-	|MINUS	{$$=$1;} 
-	|MUL 	{$$=$1;}
-	|DIV 	{$$=$1;}
-	|MOD 	{$$=$1;}
-	|INC 	{$$=$1;}
-	|DEC	{$$=$1;} 
-	|INAD 	{$$=$1;}
-	|IOR 	{$$=$1;}
-	|XOR 	{$$=$1;}
-	|NOT 	{$$=$1;}
-	|SHL 	{$$=$1;}
-	|SHR	{$$=$1;} 
-	;
+	:PLUS	
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = PLUS;
+	}
+	|MINUS	
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = MINUS;
+	}
+	|MUL 	
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = MUL;
+	}
+	|DIV
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = DIV;
+	}
+	|MOD
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = MOD;
+	}
+	|INC
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = INC;
+	}
+	|DEC
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = DEC;
+	}
+	|INAD
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = INAD;
+	}
+	|IOR
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = IOR;
+	}
+	|XOR
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = XOR;
+	}
+	|NOT
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = NOT;
+	}
+	|SHL
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = SHL;
+	}
+	|SHR
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = SHR;
+	};
 
 //定义关系运算符
 rel_op
-	:EQ 	{$$=$1;}
-	|GT 	{$$=$1;}
-	|LT 	{$$=$1;}
-	|GE		{$$=$1;}
-	|LE 	{$$=$1;}
-	|NEQ	{$$=$1;}
-	;
+	:EQ
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = EQ;
+	}
+	|GT
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = GT;
+	}
+	|LT
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = LT;
+	}
+	|GE
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = GE;
+	}
+	|LE
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = LE;
+	}
+	|NEQ
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = NEQ;
+	};
 
 //定义逻辑运算符
 log_op
-	:AND 		{$$=$1;}
-	|OR 		{$$=$1;}
-	|OPPOSITE	{$$=$1;}
-	;
+	:AND
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = AND;
+	}
+	|OR
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = OR;
+	}
+	|OPPOSITE
+	{
+		$$ = node->exp_node(op);
+		$$->attr.op = OPPOSITE;
+	};
 
 //定义id
 id
-	//避免左递归
+//避免左递归
 	:ID
 	{	
-		$$ = node->stmt_node(dec_stmt);
+		$$ = node->node->exp_node(id);
 		$$->attr.name = $1->attr.name;
 		$$->address = $1->address;
 	}
@@ -177,7 +285,7 @@ id
 			temp = temp->brother;
 		temp->brother = $1;
 	}
-	// |asgn_stmt		{$$=$1;}
+	// |asgn_stmt		{$$ =$1;}
 	// |asgn_stmt COMMA id
 	;
 
@@ -186,14 +294,14 @@ exp
 	//移进规约冲突，可能是因为不同的op优先级不一样
 	:exp op exp		
 	{
-		$$ = node->exp_node($2->type.exp_type);
+		$$ = node->node->exp_node(op);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
 	|LPRACE exp RPRACE		{$$=$2;}
 	|NUMBER	
 	{
-		$$ = node->exp_node($2->type.exp_type);
+		$$ = node->node->exp_node(number);
 		$$->attr.value = $2->attr.value;
 	}
 	;
@@ -202,11 +310,11 @@ exp
 asgn_stmt
 	:id ASSIGN exp
 	{
-		$$ = node->exp_node($2->type.exp_type);
+		$$ = node->node->exp_node($2->type.exp_type);
 	}
 	|asgn_stmt COMMA id
 	{
-		$$ = node->stmt_node(asgn_stmt);
+		$$ = node->node->stmt_node(asgn_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
@@ -216,7 +324,7 @@ dec_stmt
 	:type id 
 	{
 		//type中的值都是mylexer->h中define的值,注意
-		$$ = node->stmt_node(dec_stmt);
+		$$ = node->node->stmt_node(dec_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $2;
 	}
@@ -231,27 +339,27 @@ if_stmt
 	//没考虑else if的实现
 	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(if_stmt);
+		$$ = node->node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 		$$->child[2] = $10;
 	}
 	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(if_stmt);
+		$$ = node->node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(if_stmt);
+		$$ = node->node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 		$$->child[2] = $10;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(if_stmt);
+		$$ = node->node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 	}
@@ -261,13 +369,13 @@ if_stmt
 while_stmt       
 	:WHILE LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(while_stmt);
+		$$ = node->node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;		
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(while_stmt);
+		$$ = node->node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;		
 	}
@@ -280,7 +388,7 @@ for_stmt
 	//:FOR LPRACE for_1 SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(for_stmt);
+		$$ = node->node->stmt_node(for_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
@@ -288,7 +396,7 @@ for_stmt
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->stmt_node(for_stmt);
+		$$ = node->node->stmt_node(for_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
