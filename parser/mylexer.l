@@ -11,8 +11,11 @@ Date: 2018年11月15日
 #include "myparser.h"
 #include "Tree.h"
 
+//全局变量一个工程下有一个即可，不这样写error link 2005
+// TreeNode *node;
+// ParseTree tree;
 TreeNode node;
-ParseTree tree;
+extern ParseTree tree;
 %}
 
 /////////////////////////////////////////////////////////////////////////////

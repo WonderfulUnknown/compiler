@@ -6,7 +6,7 @@
 typedef enum
 {
 	stmt,
-	exps//ç”¨expç»™node_typeèµ‹å€¼æ˜¾ç¤ºexpä¸æ˜ç¡®
+	exps//ÓÃexp¸ønode_type¸³ÖµÏÔÊ¾exp²»Ã÷È·
 } NodeType;
 
 typedef enum
@@ -23,58 +23,22 @@ typedef enum
 
 typedef enum
 {
-	op,
+	oper,
 	number,
 	id
 } ExpType;
 
-typedef enum
-{
-	INT,
-	DOBULE,
-	FLOAT,
-	CHAR,
-	BOOL,
-	VOID
-} DataType;
-
-typedef enum
-{
-	PLUS,
-	MINUS,
-	MUL,
-	DIV,
-	MOD,
-	INC,
-	DEC,
-	INAD,
-	IOR,
-	XOR,
-	NOT,
-	SHL,
-	SHR,
-	EQ,
-	GT,
-	LT,
-	GE,
-	LE,
-	NEQ,
-	AND,
-	OR,
-	OPPOSITE
-} Operator;
-
 #define MAXCHILDREN 3
-typedef struct TreeNode
+struct TreeNode
 {
 	struct TreeNode * child[MAXCHILDREN];
 	struct TreeNode * brother;
 
-	int lineno;//ç»“ç‚¹åœ¨ä»£ç ä¸­çš„è¡Œå·
-	int node_num;//ç»“ç‚¹ç›¸å¯¹äºæ•´æ£µæ ‘çš„ç¼–å·
+	int lineno;//½áµãÔÚ´úÂëÖĞµÄĞĞºÅ
+	int node_num;//½áµãÏà¶ÔÓÚÕû¿ÃÊ÷µÄ±àºÅ
 
-	//éœ€è¦çš„æ—¶å€™ç”¨åå­—å»æŸ¥å³å¯ï¼Œå¯åˆ é™¤
-	int address;//æ ‡è¯†ç¬¦åœ¨ç¬¦å·è¡¨ä¸­çš„ä½ç½®
+	//ĞèÒªµÄÊ±ºòÓÃÃû×ÖÈ¥²é¼´¿É£¬¿ÉÉ¾³ı
+	int address;//±êÊ¶·ûÔÚ·ûºÅ±íÖĞµÄÎ»ÖÃ
 
 	NodeType node_type;
 	
@@ -86,10 +50,11 @@ typedef struct TreeNode
 
 	union
 	{
-		Operator op;
-		int value;
+		//Operator oper;
+		int op;
+		double value;
 		char * name;
-		DataType data_type;
+		int data_type;
 	} attr;
 
 
@@ -99,11 +64,11 @@ typedef struct TreeNode
 	void print_node(TreeNode *node);
 };
 
-typedef struct ParseTree
+struct ParseTree
 {
-	char symbol_table[1000][50];//ç¬¦å·è¡¨
-	int table_number = 0; //è®°å½•ç¬¦å·è¡¨ä¸­å‚¨å­˜çš„ä¸ªæ•°
-	int all_line = 0;//è®°å½•ä»£ç çš„è¡Œæ•°
+	char symbol_table[1000][50];//·ûºÅ±í
+	int table_number = 0; //¼ÇÂ¼·ûºÅ±íÖĞ´¢´æµÄ¸öÊı
+	int all_line = 0;//¼ÇÂ¼´úÂëµÄĞĞÊı
 
 	TreeNode * root;
 

@@ -4,13 +4,14 @@
 
 using namespace std;
 
-ParseTree *tree = new ParseTree;
+// ParseTree *tree = new ParseTree;
+ParseTree tree;
 
 TreeNode * TreeNode::stmt_node(StmtType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++tree->all_line;
+		cout << "Out of memory error at line" << ++tree.all_line;
 	else
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
@@ -19,7 +20,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 
 		node->node_type = stmt;
 		node->type.stmt_type = type;
-		node->lineno = tree->all_line;
+		node->lineno = tree.all_line;
 	}
 
 	print_node(node);
@@ -30,7 +31,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++tree->all_line;
+		cout << "Out of memory error at line" << ++tree.all_line;
 	else 
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
@@ -39,7 +40,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 
 		node->node_type = exps;
 		node->type.exp_type = type;
-		node->lineno = tree->all_line;
+		node->lineno = tree.all_line;
 		//node->data_type = Void;
 	}
 
@@ -47,19 +48,19 @@ TreeNode * TreeNode::exp_node(ExpType type)
 	return node;
 }
 
-//éå†ç¬¦å·è¡¨ï¼Œå¦‚æœidåœ¨å…¶ä¸­å°±å¾—åˆ°idçš„ä½ç½®ï¼Œä¸åœ¨å°±å¡«å…¥
+//±éÀú·ûºÅ±í£¬Èç¹ûidÔÚÆäÖĞ¾ÍµÃµ½idµÄÎ»ÖÃ£¬²»ÔÚ¾ÍÌîÈë
 int ParseTree::search_table(char *id)
 {
 	int i = 0;
-	for (; i < tree->table_number; i++)
+	for (; i < tree.table_number; i++)
 	{
-		if (strcmp(tree->symbol_table[i], id) == 0)
+		if (strcmp(tree.symbol_table[i], id) == 0)
 			break;
 	}
-	if (i >= tree->table_number)
+	if (i >= tree.table_number)
 	{
-		strcpy_s(tree->symbol_table[i], strlen(id) + 1, id); //æ•°ç»„é•¿åº¦ä¸åŠ 1æŠ¥é”™,"\0"
-		tree->table_number++;
+		strcpy_s(tree.symbol_table[i], strlen(id) + 1, id); //Êı×é³¤¶È²»¼Ó1±¨´í,"\0"
+		tree.table_number++;
 	}
 	return i;
 }
@@ -67,7 +68,7 @@ int ParseTree::search_table(char *id)
 void TreeNode::print_node(TreeNode *node)
 {
 	ofstream fout("output.txt");
-	fout.setf(ios_base::left);//å·¦å¯¹é½
+	fout.setf(ios_base::left);//×ó¶ÔÆë
 
 	fout.width(3);
 	fout << node->node_num << ": ";
@@ -90,7 +91,7 @@ void TreeNode::print_node(TreeNode *node)
 		fout.width(10);
 		switch (node->type.exp_type)
 		{
-		case op:
+		case oper:
 			fout << "op: " << node->attr.op;
 		case number:
 			fout << "value: " << node->attr.value;
@@ -99,7 +100,7 @@ void TreeNode::print_node(TreeNode *node)
 		}
 	}
 
-	//å¯èƒ½éœ€è¦è€ƒè™‘idlistçš„è¾“å‡º
+	//¿ÉÄÜĞèÒª¿¼ÂÇidlistµÄÊä³ö
 
 	fout << "Children:";
 	for (int i = 0; i < MAXCHILDREN; i++)

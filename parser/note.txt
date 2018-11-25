@@ -14,6 +14,14 @@ to_do:
 1.结点编号，行号
 2.读取文件，结果写入文件
 
+problem:
+运行到
+main()
+{
+	int a, b;
+
+出错，和;}无关
+
 /////////////
 考虑语法树的构造：
 1.语法树数据结构的设计：节点类型的设定，不同类型节点应保存哪些信息，多叉树的实现方式
@@ -47,3 +55,15 @@ main()
 11: Expr,               op: =,         Children: 7    10
 12: if statement,                      Children: 6    11
 13: compound statement,                Children: 3	  12
+
+main()
+{
+}
+
+
+出错显示代码段：
+	static size_t __CLRCALL_OR_CDECL length(const _Elem *_First)
+		{	// find length of null-terminated string
+		return (*_First == 0 ? 0
+			: _CSTD strlen(_First));
+		}

@@ -10,8 +10,10 @@ Date:2018年11月15日
 #include "Tree.h"
 
 using namespace std;
-ParseTree *tree;
+// ParseTree tree;
+// TreeNode *node;
 TreeNode *node;
+extern ParseTree tree;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -89,9 +91,9 @@ code
 	:stmt 		{$$ = $1;}
 	|code stmt	
 	{
-		tree->root->child[0] = $1;
-		tree->root->child[1] = $2;
-		$$ = tree->root;
+		tree.root->child[0] = $1;
+		tree.root->child[1] = $2;
+		$$ = tree.root;
 	}
 	;
 
@@ -151,67 +153,67 @@ op
 ari_op
 	:PLUS	
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = PLUS;
 	}
 	|MINUS	
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = MINUS;
 	}
 	|MUL 	
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = MUL;
 	}
 	|DIV
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = DIV;
 	}
 	|MOD
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = MOD;
 	}
 	|INC
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = INC;
 	}
 	|DEC
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = DEC;
 	}
 	|INAD
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = INAD;
 	}
 	|IOR
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = IOR;
 	}
 	|XOR
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = XOR;
 	}
 	|NOT
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = NOT;
 	}
 	|SHL
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = SHL;
 	}
 	|SHR
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = SHR;
 	};
 
@@ -219,32 +221,32 @@ ari_op
 rel_op
 	:EQ
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = EQ;
 	}
 	|GT
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = GT;
 	}
 	|LT
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = LT;
 	}
 	|GE
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = GE;
 	}
 	|LE
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = LE;
 	}
 	|NEQ
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = NEQ;
 	};
 
@@ -252,17 +254,17 @@ rel_op
 log_op
 	:AND
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = AND;
 	}
 	|OR
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = OR;
 	}
 	|OPPOSITE
 	{
-		$$ = node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->attr.op = OPPOSITE;
 	};
 
@@ -271,7 +273,7 @@ id
 //避免左递归
 	:ID
 	{	
-		$$ = node->node->exp_node(id);
+		$$ = node->exp_node(id);
 		$$->attr.name = $1->attr.name;
 		$$->address = $1->address;
 	}
@@ -294,14 +296,14 @@ exp
 	//移进规约冲突，可能是因为不同的op优先级不一样
 	:exp op exp		
 	{
-		$$ = node->node->exp_node(op);
+		$$ = node->exp_node(oper);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
 	|LPRACE exp RPRACE		{$$=$2;}
 	|NUMBER	
 	{
-		$$ = node->node->exp_node(number);
+		$$ = node->exp_node(number);
 		$$->attr.value = $2->attr.value;
 	}
 	;
@@ -310,11 +312,11 @@ exp
 asgn_stmt
 	:id ASSIGN exp
 	{
-		$$ = node->node->exp_node($2->type.exp_type);
+		$$ = node->exp_node($2->type.exp_type);
 	}
 	|asgn_stmt COMMA id
 	{
-		$$ = node->node->stmt_node(asgn_stmt);
+		$$ = node->stmt_node(asgn_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
@@ -324,7 +326,7 @@ dec_stmt
 	:type id 
 	{
 		//type中的值都是mylexer->h中define的值,注意
-		$$ = node->node->stmt_node(dec_stmt);
+		$$ = node->stmt_node(dec_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $2;
 	}
@@ -339,27 +341,27 @@ if_stmt
 	//没考虑else if的实现
 	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(if_stmt);
+		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 		$$->child[2] = $10;
 	}
 	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(if_stmt);
+		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(if_stmt);
+		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 		$$->child[2] = $10;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(if_stmt);
+		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 	}
@@ -369,13 +371,13 @@ if_stmt
 while_stmt       
 	:WHILE LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(while_stmt);
+		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;		
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(while_stmt);
+		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;		
 	}
@@ -388,7 +390,7 @@ for_stmt
 	//:FOR LPRACE for_1 SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(for_stmt);
+		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
@@ -396,7 +398,7 @@ for_stmt
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node->node->stmt_node(for_stmt);
+		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
