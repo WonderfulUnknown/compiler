@@ -3,61 +3,62 @@
 
 using namespace std;
 
-int lineno = 0;
+Symbol_table table;
 
-TreeNode * TreeNode::stmt_node(StmtKind kind)
+TreeNode * TreeNode::stmt_node(StmtType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++lineno;
+		cout << "Out of memory error at line" << ++table.all_line;
 	else
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
 			node->child[i] = NULL;
 		node->brother = NULL;
-		node->nodekind = StmtK;
-		node->kind.stmt = kind;
-		node->lineno = lineno;
+
+		node->node_type = stmt;
+		node->type.stmt_type = type;
+		node->lineno = table.all_line;
 	}
 	return node;
 }
 
-TreeNode * TreeNode::expr_node(ExpKind kind)
+TreeNode * TreeNode::exp_node(ExpType type)
 {
 	TreeNode *node = new TreeNode;
-	int i;
 	if (!node)
-		cout << "Out of memory error at line" << ++lineno;
+		cout << "Out of memory error at line" << ++table.all_line;
 	else {
-		for (i = 0; i < MAXCHILDREN; i++) node->child[i] = NULL;
+		for (int i = 0; i < MAXCHILDREN; i++) 
+			node->child[i] = NULL;
 		node->brother = NULL;
-		node->nodekind = ExpK;
-		node->kind.exp = kind;
-		node->lineno = lineno;
-		node->type = Void;
+
+		node->node_type = exps;
+		node->type.exp_type = type;
+		node->lineno = table.all_line;
+		node->data_type = Void;
 	}
 	return node;
 }
 
-//number的构造函数
-TreeNode * treeNode::simple_expr(void)
-{
-	TreeNode * t = term();
-	while ((token == PLUS) || (token == MINUS))
-	{
-		TreeNode * p = newExpNode(OpK);
-		if (p != NULL) {
-			p->child[0] = t;
-			p->attr.op = token;
-			t = p;
-			match(token);
-			node->child[1] = term();
-		}
-	}
-	return node;
-}
+//TreeNode * TreeNode::simple_exp(void)
+//{
+//	TreeNode * t = term();
+//	while ((token == PLUS) || (token == MINUS))
+//	{
+//		TreeNode * p = newexpNode(OpK);
+//		if (p != NULL) {
+//			p->child[0] = t;
+//			p->attr.op = token;
+//			t = p;
+//			match(token);
+//			node->child[1] = term();
+//		}
+//	}
+//	return node;
+//}
 
-//TreeNode * treeNode::if_stmt(void)
+//TreeNode * TreeNode::if_stmt(void)
 //{
 //	TreeNode * t = newStmtNode(IfK);
 //	match(IF);

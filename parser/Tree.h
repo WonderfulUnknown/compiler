@@ -6,28 +6,26 @@
 typedef enum 
 {
 	stmt,
-	exp
-} node_type;
+	exps//用exp给node_type赋值显示exp不明确
+} NodeType;
 
 typedef enum
 {
-	// expr,
-	// number,
 	asgn_stmt,
 	dec_stmt,
 	if_stmt,
 	while_stmt,
-	for_stmt,
+	for_stmt//,
 	// input_stmt,
 	// output_stmt
-} stmt_type;
+} StmtType;
 
 typedef enum 
 {
 	op,
 	number,
 	id
-} exp_type;
+} ExpType;
 
 typedef enum 
 {
@@ -37,7 +35,7 @@ typedef enum
 	Char,
 	Bool,
 	Void
-} data_type;
+} DataType;
 
 #define MAXCHILDREN 3
 typedef struct TreeNode
@@ -47,27 +45,34 @@ typedef struct TreeNode
 
 	int lineno;
 	int address;
-	NodeKind nodekind;
+	NodeType node_type;
+	DataType data_type; 
 	
-	union { StmtKind stmt; ExpKind exp;} kind;
-	union { //TokenType op;
+	union 
+	{ 
+		StmtType stmt_type; 
+		ExpType exp_type;
+	} type;
+
+	union 
+	{ 
+		//TokenType op;
 		int value;
-		char * name; } attr;
+		char * name; 
+	} attr;
 	
-	ExpType type; /* for type checking of exps */
 
-	TreeNode* stmt_node(StmtKind kind);
-	TreeNode* expr_node(ExpKind kind);
-	TreeNode* simple_exp(void);
-	TreeNode* if_stmt(void);
-} Node;
+	TreeNode* stmt_node(StmtType type);
+	TreeNode* exp_node(ExpType type);
+	//TreeNode* simple_exp(void);
+	// TreeNode* if_stmt(void);
+} ;
 
-struct Symbol_table
+typedef struct Symbol_table
 {
 	char symbol[1000][50];//符号表
 	int number = 0; //记录符号表中储存的个数
 
 	int search_table(char *id);
-	// string get_name(int address);
-	//int get_num(char*);
-};
+	int all_line = 0;
+} ;

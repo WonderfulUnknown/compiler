@@ -40,14 +40,12 @@ TreeNode *node;
 // attribute type
 %include {
 #ifndef YYSTYPE
-#define YYSTYPE TreeNode*
+#define YYSTYPE TreeNode*	//所有的$都是TreeNode*类型
 #endif
 }
 
 // place any declarations here
 
-//myparser->h define excpet:
-//DOUBLE FLOAT BOOL UNKNOWN BREAK RETURN
 %token INT DOUBLE FLOAT CHAR BOOL VOID 
 %token PLUS MINUS MUL DIV MOD INC DEC INAD IOR XOR NOT SHL SHR 
 %token EQ GT LT GE LE NEQ
@@ -79,24 +77,27 @@ TreeNode *node;
 // place your YACC rules here (there must be at least one)
 
 //定义main函数
-c_program
-	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
-	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
-	|VOID MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
-	|VOID MAIN LPRACE VOID RPRACE LBRACE code RBRACE{$$=$7;}
-	|INT MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
-	|INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE	{$$=$7;}
-	;
+// c_program
+// 	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
+// 	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
+// 	|VOID MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
+// 	|VOID MAIN LPRACE VOID RPRACE LBRACE code RBRACE{$$=$7;}
+// 	|INT MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
+// 	|INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE	{$$=$7;}
+// 	;
 
 //定义代码段
-code
-	:stmt 		{$$=$1;}
-	|code stmt	//{$$=$1;} //////!!!!!!!!!!!!!!!!!!!!!!
-	;
+// code
+// 	:stmt 		{$$=$1;}
+// 	|code stmt	
+// 	{
+		
+// 	}
+// 	;
 
 //定义语句
 stmt
-	:expr SIMICOLON			{$$=$1;}
+	:exp SIMICOLON			{$$=$1;}
 	|asgn_stmt SIMICOLON	{$$=$1;}
 	|dec_stmt SIMICOLON		{$$=$1;}
 	|if_stmt SIMICOLON		{$$=$1;}
@@ -164,10 +165,11 @@ id
 	{	
 		$$ = node->stmt_node(dec_stmt);
 		$$->attr.name = $1->attr.name;
-		//不识别yylval
-		$$->address = yylval->address;
+		$$->address = $1->address;
 	}
-	|ID COMMA id
+	//shift-reduce conflict on COMMA 移进规约冲突
+	//|ID COMMA id
+	|id COMMA ID
 	{		
 		//可能需要考虑是否可以使用id赋值
 		YYSTYPE temp = $3;
@@ -180,29 +182,33 @@ id
 	;
 
 //定义表达式
-expr 
-	:expr op expr		
+exp 
+	//移进规约冲突，可能是因为不同的op优先级不一样
+	:exp op exp		
 	{
-		$$ = node->expr_node($2->attr.value);
+		$$ = node->exp_node($2->type.exp_type);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
-	|LPRACE expr RPRACE		{$$=$2;}
+	|LPRACE exp RPRACE		{$$=$2;}
 	|NUMBER	
 	{
-		$$ = node->simple_expr();
+		$$ = node->exp_node($2->type.exp_type);
+		$$->attr.value = $2->attr.value;
 	}
 	;
 
 //定义赋值语句
 asgn_stmt
-	:id ASSIGN expr
+	:id ASSIGN exp
 	{
-		$$ = node->expr_node($2);
+		$$ = node->exp_node($2->type.exp_type);
 	}
 	|asgn_stmt COMMA id
 	{
-		///////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		$$ = node->stmt_node(asgn_stmt);
+		$$->child[0] = $1;
+		$$->child[1] = $3;
 	}
 	;
 //定义声明语句
@@ -223,14 +229,14 @@ dec_stmt
 if_stmt
 	//考虑DFA->NFA
 	//没考虑else if的实现
-	:IF LPRACE expr RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
 		$$->child[2] = $10;
 	}
-	|IF LPRACE expr RPRACE LBRACE stmt RBRACE
+	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
@@ -253,7 +259,7 @@ if_stmt
 
 //定义while语句
 while_stmt       
-	:WHILE LPRACE expr RPRACE LBRACE stmt RBRACE
+	:WHILE LPRACE exp RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
@@ -271,8 +277,8 @@ while_stmt
 //可能需要考虑for语句的三个字句分别判断
 for_stmt 
 	//:FOR LPRACE for_1 SIMICOLON for_2 SIMICOLON for_3 RPRACE LBRACE stmt RBRACE
-	//:FOR LPRACE for_1 SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
-	:FOR LPRACE asgn_stmt SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
+	//:FOR LPRACE for_1 SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
@@ -280,7 +286,7 @@ for_stmt
 		$$->child[2] = $7;
 		$$->child[3]= $10;
 	}
-	|FOR LPRACE id SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
+	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
@@ -311,9 +317,9 @@ int main(void)
 	int n = 1;
 	mylexer lexer;
 	myparser parser;
-	if (parser->yycreate(&lexer)) {
-		if (lexer->yycreate(&parser)) {
-			n = parser->yyparse();
+	if (parser.yycreate(&lexer)) {
+		if (lexer.yycreate(&parser)) {
+			n = parser.yyparse();
 		}
 	}
 	return n;

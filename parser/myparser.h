@@ -19,7 +19,7 @@
 * C++ header file generated from myparser.y.
 * 
 * Date: 11/25/18
-* Time: 17:19:21
+* Time: 19:53:37
 * 
 * AYACC Version: 2.07
 ****************************************************************************/
@@ -75,7 +75,7 @@ public:
 #line 41 ".\\myparser.y"
 
 #ifndef YYSTYPE
-#define YYSTYPE TreeNode*
+#define YYSTYPE TreeNode*	//所有的$都是TreeNode*类型
 #endif
 
 #line 82 "myparser.h"

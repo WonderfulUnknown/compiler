@@ -42,8 +42,9 @@ Symbol_table table;
 
 // place any declarations here
 
-delim       [ \t\n]
+delim       [ \t]
 delims      {delim}+
+newline     \n
 digit       [0-9]
 letter      [A-Za-z]
 number      -?{digit}+(\.{digit}+)?([eE][-+]?{digit}+)?
@@ -62,8 +63,12 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 
 // place your Lex rules here
 
-{delims}		{/*do nothing*/}
+{delims}		   {}
+{newline}      {table.all_line++;}
 {annotation}	{}
+
+//myparser.h 中自动给出相应的宏定义
+
 //数据类型
 int     {return INT;}
 double  {return DOUBLE;}
@@ -128,13 +133,15 @@ main    {return MAIN;}
                //yylval = &node;
 			   yylval->address = table.search_table(yytext);
 			   yylval->attr.name = (yytext);
-            return yylval;
+            yylval->type.exp_type = id;
+            return ID;
             }
             
             //yyleng=strlen(yytext)
 {number}    { 
                yylval->attr.value = atof(yytext);
-               return yylval;
+               yylval->type.exp_type = number;
+               return NUMBER;
             }
 
 // .          {return UNKNOWN;}
