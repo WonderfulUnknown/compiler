@@ -127,16 +127,17 @@ main    {return MAIN;}
                //yylval = table.search_table(yytext);//不在符号表中就填入
                //yylval = &node;
 			   yylval->address = table.search_table(yytext);
-			   return ID;
+			   yylval->attr.name = (yytext);
+            return yylval;
             }
             
             //yyleng=strlen(yytext)
 {number}    { 
-               yylval->attr.val = atof(yytext);
-               return NUMBER;
+               yylval->attr.value = atof(yytext);
+               return yylval;
             }
 
-.           {return UNKNOWN;}
+// .          {return UNKNOWN;}
 
 %%
 

@@ -12,10 +12,8 @@ Date: 2018年11月15日
 
 
 using namespace std;
-//#include "Parsenode.h"
 #include "Tree.h"
-//Parse_tree tree;
-TreeNode* node;
+TreeNode *node;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,7 +91,7 @@ c_program
 //定义代码段
 code
 	:stmt 		{$$=$1;}
-	|code stmt	//{$$=$1;} //////!!!!!!!!!!!!!!!!!!!!!!!!11111111111111
+	|code stmt	//{$$=$1;} //////!!!!!!!!!!!!!!!!!!!!!!
 	;
 
 //定义语句
@@ -164,8 +162,10 @@ id
 	//避免左递归
 	:ID
 	{	
-		//可能需要考虑孩子的问题	
-		$$ = node.stmt_node(dec_stmt,-1,-1,$s1,yylval);
+		$$ = node->stmt_node(dec_stmt);
+		$$->attr.name = $1->attr.name;
+		//不识别yylval
+		$$->address = yylval->address;
 	}
 	|ID COMMA id
 	{		
@@ -175,7 +175,7 @@ id
 			temp = temp->brother;
 		temp->brother = $1;
 	}
-	// |asgn_stmt		{$$=$s1;}
+	// |asgn_stmt		{$$=$1;}
 	// |asgn_stmt COMMA id
 	;
 
@@ -183,15 +183,14 @@ id
 expr 
 	:expr op expr		
 	{
-		$$ = node.expr_node($2);
+		$$ = node->expr_node($2->attr.value);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
 	|LPRACE expr RPRACE		{$$=$2;}
-	//= =为此->h文件type多添加了number类型
 	|NUMBER	
 	{
-		$$ = node.stmt_node(number,-1,$s1,-1,-1);
+		$$ = node->simple_expr();
 	}
 	;
 
@@ -199,7 +198,7 @@ expr
 asgn_stmt
 	:id ASSIGN expr
 	{
-		$$ = node.expr_node($2);
+		$$ = node->expr_node($2);
 	}
 	|asgn_stmt COMMA id
 	{
@@ -211,8 +210,9 @@ dec_stmt
 	:type id 
 	{
 		//type中的值都是mylexer->h中define的值,注意
-		///////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		$$ = node.stmt_node(dec_stmt,$1,-1,$s2,yylval);
+		$$ = node->stmt_node(dec_stmt);
+		$$->child[0] = $1;
+		$$->child[1] = $2;
 	}
 	;
 
@@ -225,29 +225,29 @@ if_stmt
 	//没考虑else if的实现
 	:IF LPRACE expr RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(if_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;
-		$$->child[2] = $s10;
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+		$$->child[2] = $10;
 	}
 	|IF LPRACE expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(if_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(if_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;
-		$$->child[2] = $s10;
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+		$$->child[2] = $10;
 	}
 	|IF LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(if_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
 	}
 	;
 
@@ -255,15 +255,15 @@ if_stmt
 while_stmt       
 	:WHILE LPRACE expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(while_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;		
+		$$ = node->stmt_node(while_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;		
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(while_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s6;		
+		$$ = node->stmt_node(while_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;		
 	}
 	;
 	
@@ -274,19 +274,19 @@ for_stmt
 	//:FOR LPRACE for_1 SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE asgn_stmt SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(for_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s5;
-		$$->child[2] = $s7;
-		$$->child[3]= $s10;
+		$$ = node->stmt_node(for_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $5;
+		$$->child[2] = $7;
+		$$->child[3]= $10;
 	}
 	|FOR LPRACE id SIMICOLON expr SIMICOLON expr RPRACE LBRACE stmt RBRACE
 	{
-		$$ = node.stmt_node(for_stmt);
-		$$->child[0] = $s3;
-		$$->child[1] = $s5;
-		$$->child[2] = $s7;
-		$$->child[3]= $s10;	
+		$$ = node->stmt_node(for_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $5;
+		$$->child[2] = $7;
+		$$->child[3]= $10;	
 	}
 	;
 
@@ -295,14 +295,6 @@ for_stmt
 // 	:
 // 	|asgn_stmt
 // 	|id
-// 	;
-
-// for_2
-// 	:expr
-// 	;
-
-// for_3
-// 	:expr
 // 	;
 
 //定义输入语句

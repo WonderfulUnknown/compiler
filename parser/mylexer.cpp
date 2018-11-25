@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 60 of your 30 day trial period.
+* You are on day 66 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -18,8 +18,8 @@
 * mylexer.cpp
 * C++ source file generated from mylexer.l.
 * 
-* Date: 11/20/18
-* Time: 00:41:10
+* Date: 11/25/18
+* Time: 17:19:21
 * 
 * ALex Version: 2.07
 ****************************************************************************/
@@ -50,11 +50,12 @@ Date: 2018年11月15日
 //using namespace std;
 
 //#include "ParseTree.h"
+#include "Tree.h"
 // Parse_tree tree;
-Tree_node node;
+TreeNode node;
 Symbol_table table;
 
-#line 58 "mylexer.cpp"
+#line 59 "mylexer.cpp"
 // repeated because of possible precompiled header
 #include <yyclex.h>
 
@@ -78,7 +79,7 @@ YYLEXERNAME::YYLEXERNAME()
 
 	// place any extra initialisation code here
 
-#line 82 "mylexer.cpp"
+#line 83 "mylexer.cpp"
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -90,7 +91,7 @@ YYLEXERNAME::~YYLEXERNAME()
 
 	// place any extra cleanup code here
 
-#line 94 "mylexer.cpp"
+#line 95 "mylexer.cpp"
 }
 
 #ifndef YYTEXT_SIZE
@@ -160,369 +161,366 @@ int YYLEXERNAME::yyaction(int action)
 
 	// extract yylval for use later on in actions
 	YYSTYPE YYFAR& yylval = *(YYSTYPE YYFAR*)yyparserptr->yylvalptr;
+	yylval = &node;
 
-#line 165 "mylexer.cpp"
+#line 167 "mylexer.cpp"
 	yyreturnflg = yytrue;
 	switch (action) {
 	case 1:
 		{
-#line 64 ".\\mylexer.l"
+#line 65 ".\\mylexer.l"
 /*do nothing*/
-#line 172 "mylexer.cpp"
+#line 174 "mylexer.cpp"
 		}
 		break;
 	case 2:
 		{
-#line 65 ".\\mylexer.l"
+#line 66 ".\\mylexer.l"
 
-#line 179 "mylexer.cpp"
+#line 181 "mylexer.cpp"
 		}
 		break;
 	case 3:
 		{
-#line 67 ".\\mylexer.l"
+#line 68 ".\\mylexer.l"
 return INT;
-#line 186 "mylexer.cpp"
+#line 188 "mylexer.cpp"
 		}
 		break;
 	case 4:
 		{
-#line 68 ".\\mylexer.l"
+#line 69 ".\\mylexer.l"
 return DOUBLE;
-#line 193 "mylexer.cpp"
+#line 195 "mylexer.cpp"
 		}
 		break;
 	case 5:
 		{
-#line 69 ".\\mylexer.l"
+#line 70 ".\\mylexer.l"
 return FLOAT;
-#line 200 "mylexer.cpp"
+#line 202 "mylexer.cpp"
 		}
 		break;
 	case 6:
 		{
-#line 70 ".\\mylexer.l"
+#line 71 ".\\mylexer.l"
 return CHAR;
-#line 207 "mylexer.cpp"
+#line 209 "mylexer.cpp"
 		}
 		break;
 	case 7:
 		{
-#line 71 ".\\mylexer.l"
+#line 72 ".\\mylexer.l"
 return BOOL;
-#line 214 "mylexer.cpp"
+#line 216 "mylexer.cpp"
 		}
 		break;
 	case 8:
 		{
-#line 72 ".\\mylexer.l"
+#line 73 ".\\mylexer.l"
 return VOID;
-#line 221 "mylexer.cpp"
+#line 223 "mylexer.cpp"
 		}
 		break;
 	case 9:
 		{
-#line 75 ".\\mylexer.l"
+#line 76 ".\\mylexer.l"
 return PLUS;
-#line 228 "mylexer.cpp"
+#line 230 "mylexer.cpp"
 		}
 		break;
 	case 10:
 		{
-#line 76 ".\\mylexer.l"
+#line 77 ".\\mylexer.l"
 return MINUS;
-#line 235 "mylexer.cpp"
+#line 237 "mylexer.cpp"
 		}
 		break;
 	case 11:
 		{
-#line 77 ".\\mylexer.l"
+#line 78 ".\\mylexer.l"
 return MUL;
-#line 242 "mylexer.cpp"
+#line 244 "mylexer.cpp"
 		}
 		break;
 	case 12:
 		{
-#line 78 ".\\mylexer.l"
+#line 79 ".\\mylexer.l"
 return DIV;
-#line 249 "mylexer.cpp"
+#line 251 "mylexer.cpp"
 		}
 		break;
 	case 13:
 		{
-#line 79 ".\\mylexer.l"
+#line 80 ".\\mylexer.l"
 return MOD;
-#line 256 "mylexer.cpp"
+#line 258 "mylexer.cpp"
 		}
 		break;
 	case 14:
 		{
-#line 80 ".\\mylexer.l"
+#line 81 ".\\mylexer.l"
 return INC;
-#line 263 "mylexer.cpp"
+#line 265 "mylexer.cpp"
 		}
 		break;
 	case 15:
 		{
-#line 81 ".\\mylexer.l"
+#line 82 ".\\mylexer.l"
 return DEC;
-#line 270 "mylexer.cpp"
+#line 272 "mylexer.cpp"
 		}
 		break;
 	case 16:
 		{
-#line 82 ".\\mylexer.l"
+#line 83 ".\\mylexer.l"
 return INAD;
-#line 277 "mylexer.cpp"
+#line 279 "mylexer.cpp"
 		}
 		break;
 	case 17:
 		{
-#line 83 ".\\mylexer.l"
+#line 84 ".\\mylexer.l"
 return IOR;
-#line 284 "mylexer.cpp"
+#line 286 "mylexer.cpp"
 		}
 		break;
 	case 18:
 		{
-#line 84 ".\\mylexer.l"
+#line 85 ".\\mylexer.l"
 return XOR;
-#line 291 "mylexer.cpp"
+#line 293 "mylexer.cpp"
 		}
 		break;
 	case 19:
 		{
-#line 85 ".\\mylexer.l"
+#line 86 ".\\mylexer.l"
 return NOT;
-#line 298 "mylexer.cpp"
+#line 300 "mylexer.cpp"
 		}
 		break;
 	case 20:
 		{
-#line 86 ".\\mylexer.l"
+#line 87 ".\\mylexer.l"
 return SHL;
-#line 305 "mylexer.cpp"
+#line 307 "mylexer.cpp"
 		}
 		break;
 	case 21:
 		{
-#line 87 ".\\mylexer.l"
+#line 88 ".\\mylexer.l"
 return SHR;
-#line 312 "mylexer.cpp"
+#line 314 "mylexer.cpp"
 		}
 		break;
 	case 22:
 		{
-#line 90 ".\\mylexer.l"
+#line 91 ".\\mylexer.l"
 return EQ;
-#line 319 "mylexer.cpp"
+#line 321 "mylexer.cpp"
 		}
 		break;
 	case 23:
 		{
-#line 91 ".\\mylexer.l"
+#line 92 ".\\mylexer.l"
 return GT;
-#line 326 "mylexer.cpp"
+#line 328 "mylexer.cpp"
 		}
 		break;
 	case 24:
 		{
-#line 92 ".\\mylexer.l"
+#line 93 ".\\mylexer.l"
 return LT;
-#line 333 "mylexer.cpp"
+#line 335 "mylexer.cpp"
 		}
 		break;
 	case 25:
 		{
-#line 93 ".\\mylexer.l"
+#line 94 ".\\mylexer.l"
 return GE;
-#line 340 "mylexer.cpp"
+#line 342 "mylexer.cpp"
 		}
 		break;
 	case 26:
 		{
-#line 94 ".\\mylexer.l"
+#line 95 ".\\mylexer.l"
 return LE;
-#line 347 "mylexer.cpp"
+#line 349 "mylexer.cpp"
 		}
 		break;
 	case 27:
 		{
-#line 95 ".\\mylexer.l"
+#line 96 ".\\mylexer.l"
 return NEQ;
-#line 354 "mylexer.cpp"
+#line 356 "mylexer.cpp"
 		}
 		break;
 	case 28:
 		{
-#line 98 ".\\mylexer.l"
+#line 99 ".\\mylexer.l"
 return AND;
-#line 361 "mylexer.cpp"
+#line 363 "mylexer.cpp"
 		}
 		break;
 	case 29:
 		{
-#line 99 ".\\mylexer.l"
+#line 100 ".\\mylexer.l"
 return OR;
-#line 368 "mylexer.cpp"
+#line 370 "mylexer.cpp"
 		}
 		break;
 	case 30:
 		{
-#line 100 ".\\mylexer.l"
+#line 101 ".\\mylexer.l"
 return OPPOSITE;
-#line 375 "mylexer.cpp"
+#line 377 "mylexer.cpp"
 		}
 		break;
 	case 31:
 		{
-#line 103 ".\\mylexer.l"
+#line 104 ".\\mylexer.l"
 return IF;
-#line 382 "mylexer.cpp"
+#line 384 "mylexer.cpp"
 		}
 		break;
 	case 32:
 		{
-#line 104 ".\\mylexer.l"
+#line 105 ".\\mylexer.l"
 return ELSE;
-#line 389 "mylexer.cpp"
+#line 391 "mylexer.cpp"
 		}
 		break;
 	case 33:
 		{
-#line 105 ".\\mylexer.l"
+#line 106 ".\\mylexer.l"
 return WHILE;
-#line 396 "mylexer.cpp"
+#line 398 "mylexer.cpp"
 		}
 		break;
 	case 34:
 		{
-#line 106 ".\\mylexer.l"
+#line 107 ".\\mylexer.l"
 return FOR;
-#line 403 "mylexer.cpp"
+#line 405 "mylexer.cpp"
 		}
 		break;
 	case 35:
 		{
-#line 107 ".\\mylexer.l"
+#line 108 ".\\mylexer.l"
 return BREAK;
-#line 410 "mylexer.cpp"
+#line 412 "mylexer.cpp"
 		}
 		break;
 	case 36:
 		{
-#line 108 ".\\mylexer.l"
+#line 109 ".\\mylexer.l"
 return RETURN;
-#line 417 "mylexer.cpp"
+#line 419 "mylexer.cpp"
 		}
 		break;
 	case 37:
 		{
-#line 111 ".\\mylexer.l"
+#line 112 ".\\mylexer.l"
 return MAIN;
-#line 424 "mylexer.cpp"
+#line 426 "mylexer.cpp"
 		}
 		break;
 	case 38:
 		{
-#line 112 ".\\mylexer.l"
+#line 113 ".\\mylexer.l"
 return ASSIGN;
-#line 431 "mylexer.cpp"
+#line 433 "mylexer.cpp"
 		}
 		break;
 	case 39:
 		{
-#line 113 ".\\mylexer.l"
+#line 114 ".\\mylexer.l"
 return LBRACE;
-#line 438 "mylexer.cpp"
+#line 440 "mylexer.cpp"
 		}
 		break;
 	case 40:
 		{
-#line 114 ".\\mylexer.l"
+#line 115 ".\\mylexer.l"
 return RBRACE;
-#line 445 "mylexer.cpp"
+#line 447 "mylexer.cpp"
 		}
 		break;
 	case 41:
 		{
-#line 115 ".\\mylexer.l"
+#line 116 ".\\mylexer.l"
 return LPRACE;
-#line 452 "mylexer.cpp"
+#line 454 "mylexer.cpp"
 		}
 		break;
 	case 42:
 		{
-#line 116 ".\\mylexer.l"
+#line 117 ".\\mylexer.l"
 return RPRACE;
-#line 459 "mylexer.cpp"
+#line 461 "mylexer.cpp"
 		}
 		break;
 	case 43:
 		{
-#line 117 ".\\mylexer.l"
+#line 118 ".\\mylexer.l"
 return LSBRACE;
-#line 466 "mylexer.cpp"
+#line 468 "mylexer.cpp"
 		}
 		break;
 	case 44:
 		{
-#line 118 ".\\mylexer.l"
+#line 119 ".\\mylexer.l"
 return RSBRACE;
-#line 473 "mylexer.cpp"
+#line 475 "mylexer.cpp"
 		}
 		break;
 	case 45:
 		{
-#line 119 ".\\mylexer.l"
+#line 120 ".\\mylexer.l"
 return COMMA;
-#line 480 "mylexer.cpp"
+#line 482 "mylexer.cpp"
 		}
 		break;
 	case 46:
 		{
-#line 120 ".\\mylexer.l"
+#line 121 ".\\mylexer.l"
 return SIMICOLON;
-#line 487 "mylexer.cpp"
+#line 489 "mylexer.cpp"
 		}
 		break;
 	case 47:
 		{
-#line 121 ".\\mylexer.l"
+#line 122 ".\\mylexer.l"
 return COLON;
-#line 494 "mylexer.cpp"
+#line 496 "mylexer.cpp"
 		}
 		break;
 	case 48:
 		{
-#line 124 ".\\mylexer.l"
+#line 125 ".\\mylexer.l"
 
                //通过yylval将id在符号表中的地址传给.y
-               yylval = table.search_table(yytext);//不在符号表中就填入
-               return ID;
+               //yylval = table.search_table(yytext);//不在符号表中就填入
+               //yylval = &node;
+			   yylval->address = table.search_table(yytext);
+			   yylval->attr.name = (yytext);
+            return yylval;
             
-#line 505 "mylexer.cpp"
+#line 510 "mylexer.cpp"
 		}
 		break;
-#line 129 ".\\mylexer.l"
+#line 133 ".\\mylexer.l"
             
             //yyleng=strlen(yytext)
-#line 511 "mylexer.cpp"
+#line 516 "mylexer.cpp"
 	case 49:
 		{
-#line 131 ".\\mylexer.l"
+#line 135 ".\\mylexer.l"
  
-               yylval = atof(yytext);
-               return NUMBER;
+               yylval->attr.value = atof(yytext);
+               return yylval;
             
-#line 519 "mylexer.cpp"
-		}
-		break;
-	case 50:
-		{
-#line 136 ".\\mylexer.l"
-return UNKNOWN;
-#line 526 "mylexer.cpp"
+#line 524 "mylexer.cpp"
 		}
 		break;
 	default:
@@ -551,372 +549,328 @@ void YYLEXERNAME::yytables()
 	};
 	yymatch = match;
 
-	yytransitionmax = 258;
+	yytransitionmax = 215;
 	static const yytransition_t YYNEARFAR YYBASED_CODE transition[] = {
 		{ 0, 0 },
-		{ 4, 1 },
-		{ 4, 1 },
-		{ 4, 4 },
-		{ 4, 4 },
-		{ 43, 84 },
-		{ 0, 45 },
-		{ 0, 95 },
-		{ 59, 30 },
-		{ 84, 66 },
-		{ 52, 25 },
-		{ 62, 32 },
-		{ 43, 14 },
-		{ 53, 25 },
-		{ 68, 66 },
-		{ 66, 95 },
-		{ 60, 30 },
-		{ 44, 14 },
-		{ 95, 84 },
-		{ 67, 95 },
-		{ 57, 29 },
-		{ 50, 20 },
-		{ 51, 20 },
+		{ 3, 1 },
+		{ 3, 1 },
+		{ 41, 12 },
+		{ 0, 12 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 68, 68 },
+		{ 3, 3 },
+		{ 3, 3 },
+		{ 83, 65 },
+		{ 42, 83 },
+		{ 69, 45 },
 		{ 58, 29 },
+		{ 69, 45 },
+		{ 67, 65 },
+		{ 0, 44 },
+		{ 3, 1 },
 		{ 4, 1 },
+		{ 45, 68 },
+		{ 0, 12 },
+		{ 59, 29 },
 		{ 5, 1 },
-		{ 4, 4 },
-		{ 47, 18 },
-		{ 48, 18 },
 		{ 6, 1 },
+		{ 94, 83 },
 		{ 7, 1 },
-		{ 63, 33 },
 		{ 8, 1 },
 		{ 9, 1 },
 		{ 10, 1 },
 		{ 11, 1 },
 		{ 12, 1 },
+		{ 3, 3 },
 		{ 13, 1 },
-		{ 0, 45 },
 		{ 14, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
-		{ 15, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
+		{ 14, 1 },
 		{ 15, 1 },
 		{ 16, 1 },
 		{ 17, 1 },
 		{ 18, 1 },
 		{ 19, 1 },
-		{ 20, 1 },
-		{ 64, 34 },
-		{ 65, 36 },
+		{ 0, 44 },
+		{ 0, 94 },
+		{ 42, 13 },
+		{ 45, 68 },
+		{ 0, 12 },
+		{ 51, 24 },
+		{ 61, 31 },
+		{ 43, 13 },
+		{ 52, 24 },
+		{ 65, 94 },
+		{ 49, 19 },
+		{ 50, 19 },
+		{ 44, 14 },
+		{ 66, 94 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 14, 14 },
+		{ 56, 28 },
+		{ 46, 17 },
+		{ 47, 17 },
+		{ 57, 28 },
 		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
+		{ 62, 32 },
 		{ 22, 1 },
-		{ 68, 44 },
 		{ 23, 1 },
+		{ 63, 33 },
+		{ 64, 35 },
+		{ 67, 43 },
 		{ 24, 1 },
-		{ 21, 1 },
-		{ 40, 7 },
-		{ 21, 1 },
 		{ 25, 1 },
 		{ 26, 1 },
 		{ 27, 1 },
 		{ 28, 1 },
+		{ 39, 6 },
+		{ 40, 10 },
 		{ 29, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
+		{ 71, 51 },
+		{ 72, 52 },
+		{ 73, 53 },
 		{ 30, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
+		{ 74, 54 },
+		{ 75, 55 },
+		{ 76, 56 },
+		{ 77, 57 },
 		{ 31, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
+		{ 78, 59 },
+		{ 79, 60 },
+		{ 80, 61 },
 		{ 32, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
 		{ 33, 1 },
+		{ 81, 62 },
+		{ 82, 63 },
+		{ 53, 25 },
 		{ 34, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
-		{ 21, 1 },
 		{ 35, 1 },
 		{ 36, 1 },
 		{ 37, 1 },
-		{ 38, 1 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 70, 46 },
-		{ 41, 11 },
-		{ 70, 46 },
-		{ 72, 52 },
-		{ 73, 53 },
-		{ 74, 54 },
-		{ 75, 55 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 76, 56 },
-		{ 77, 57 },
-		{ 78, 58 },
-		{ 79, 60 },
-		{ 21, 102 },
-		{ 80, 61 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 21, 102 },
-		{ 42, 13 },
-		{ 0, 13 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 69, 69 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 71, 71 },
-		{ 81, 62 },
-		{ 46, 69 },
-		{ 0, 13 },
-		{ 45, 15 },
-		{ 82, 63 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 15, 15 },
-		{ 83, 64 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 83, 66 },
 		{ 54, 26 },
-		{ 84, 67 },
 		{ 55, 27 },
-		{ 56, 28 },
+		{ 84, 71 },
 		{ 85, 72 },
 		{ 86, 73 },
 		{ 87, 74 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
 		{ 88, 75 },
 		{ 89, 76 },
-		{ 90, 77 },
+		{ 90, 79 },
 		{ 91, 80 },
+		{ 20, 101 },
 		{ 92, 81 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 20, 101 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
+		{ 70, 70 },
 		{ 93, 82 },
-		{ 94, 83 },
-		{ 39, 5 },
-		{ 96, 86 },
-		{ 97, 88 },
-		{ 46, 69 },
-		{ 0, 13 },
-		{ 98, 90 },
-		{ 99, 92 },
-		{ 100, 94 },
-		{ 49, 19 },
-		{ 101, 97 },
-		{ 102, 99 },
-		{ 61, 31 }
+		{ 38, 4 },
+		{ 95, 85 },
+		{ 96, 87 },
+		{ 97, 89 },
+		{ 98, 91 },
+		{ 99, 93 },
+		{ 48, 18 },
+		{ 100, 96 },
+		{ 101, 98 },
+		{ 60, 30 }
 	};
 	yytransition = transition;
 
 	static const yystate_t YYNEARFAR YYBASED_CODE state[] = {
 		{ 0, 0, 0 },
-		{ -3, -8, 0 },
+		{ 101, -8, 0 },
 		{ 1, 0, 0 },
-		{ 0, 0, 50 },
-		{ 0, -6, 1 },
-		{ 0, 185, 30 },
+		{ 0, 6, 1 },
+		{ 0, 144, 30 },
 		{ 0, 0, 13 },
-		{ 0, 50, 16 },
+		{ 0, 57, 16 },
 		{ 0, 0, 41 },
 		{ 0, 0, 42 },
 		{ 0, 0, 11 },
-		{ 0, 87, 9 },
+		{ 0, 53, 9 },
 		{ 0, 0, 45 },
-		{ 15, 149, 10 },
-		{ 0, -30, 12 },
-		{ 69, 173, 49 },
+		{ 14, -42, 10 },
+		{ 0, 15, 12 },
+		{ 68, 21, 49 },
 		{ 0, 0, 47 },
 		{ 0, 0, 46 },
-		{ 0, -33, 24 },
-		{ 0, 193, 38 },
-		{ 0, -40, 23 },
-		{ 102, 0, 48 },
+		{ 0, 20, 24 },
+		{ 0, 150, 38 },
+		{ 0, 4, 23 },
+		{ 101, 0, 48 },
 		{ 0, 0, 43 },
 		{ 0, 0, 44 },
 		{ 0, 0, 18 },
-		{ 102, -101, 48 },
-		{ 102, 128, 48 },
-		{ 102, 123, 48 },
-		{ 102, 127, 48 },
-		{ 102, -88, 48 },
-		{ 102, -94, 48 },
-		{ 102, 160, 48 },
-		{ 102, -90, 48 },
-		{ 102, -80, 48 },
-		{ 102, -49, 48 },
+		{ 101, -51, 48 },
+		{ 101, 10, 48 },
+		{ 101, 19, 48 },
+		{ 101, 23, 48 },
+		{ 101, -29, 48 },
+		{ 101, -82, 48 },
+		{ 101, 117, 48 },
+		{ 101, -40, 48 },
+		{ 101, -27, 48 },
+		{ 101, -17, 48 },
 		{ 0, 0, 39 },
-		{ 0, -68, 17 },
+		{ 0, -36, 17 },
 		{ 0, 0, 40 },
 		{ 0, 0, 19 },
 		{ 0, 0, 27 },
 		{ 0, 0, 28 },
 		{ 0, 0, 14 },
 		{ 0, 0, 15 },
-		{ 95, 0, 0 },
-		{ -44, 74, 0 },
-		{ 69, -63, 0 },
-		{ 71, 86, 0 },
+		{ 94, 0, 0 },
+		{ -43, 79, 0 },
+		{ 68, -46, 0 },
+		{ 70, -24, 0 },
 		{ 0, 0, 20 },
 		{ 0, 0, 26 },
 		{ 0, 0, 22 },
 		{ 0, 0, 25 },
 		{ 0, 0, 21 },
-		{ 102, 21, 48 },
-		{ 102, 32, 48 },
-		{ 102, 37, 48 },
-		{ 102, 18, 48 },
-		{ 102, 47, 48 },
-		{ 102, 52, 48 },
-		{ 102, 50, 48 },
-		{ 102, 0, 31 },
-		{ 102, 49, 48 },
-		{ 102, 62, 48 },
-		{ 102, 100, 48 },
-		{ 102, 115, 48 },
-		{ 102, 126, 48 },
+		{ 101, -13, 48 },
+		{ 101, -2, 48 },
+		{ 101, 3, 48 },
+		{ 101, -15, 48 },
+		{ 101, -12, 48 },
+		{ 101, -7, 48 },
+		{ 101, -9, 48 },
+		{ 101, 0, 31 },
+		{ 101, -9, 48 },
+		{ 101, 3, 48 },
+		{ 101, -7, 48 },
+		{ 101, 7, 48 },
+		{ 101, 8, 48 },
 		{ 0, 0, 29 },
-		{ -43, -33, 0 },
-		{ 95, 191, 0 },
+		{ -42, -25, 0 },
+		{ 94, 87, 0 },
 		{ 0, 0, 2 },
-		{ 0, 148, 49 },
-		{ 71, 0, 0 },
-		{ 0, 158, 49 },
-		{ 102, 128, 48 },
-		{ 102, 140, 48 },
-		{ 102, 124, 48 },
-		{ 102, 141, 48 },
-		{ 102, 139, 48 },
-		{ 102, 144, 48 },
-		{ 102, 0, 34 },
-		{ 102, 0, 3 },
-		{ 102, 132, 48 },
-		{ 102, 126, 48 },
-		{ 102, 144, 48 },
-		{ 102, 137, 48 },
-		{ 67, -29, 0 },
-		{ 102, 0, 7 },
-		{ 102, 140, 48 },
-		{ 102, 0, 6 },
-		{ 102, 140, 48 },
-		{ 102, 0, 32 },
-		{ 102, 135, 48 },
-		{ 102, 0, 37 },
-		{ 102, 138, 48 },
-		{ 102, 0, 8 },
-		{ 102, 152, 48 },
-		{ -43, -27, 2 },
-		{ 102, 0, 35 },
-		{ 102, 154, 48 },
-		{ 102, 0, 5 },
-		{ 102, 146, 48 },
-		{ 102, 0, 33 },
-		{ 102, 0, 4 },
+		{ 0, -43, 49 },
+		{ 70, 0, 0 },
+		{ 0, 146, 49 },
+		{ 101, 24, 48 },
+		{ 101, 36, 48 },
+		{ 101, 20, 48 },
+		{ 101, 37, 48 },
+		{ 101, 61, 48 },
+		{ 101, 66, 48 },
+		{ 101, 0, 34 },
+		{ 101, 0, 3 },
+		{ 101, 54, 48 },
+		{ 101, 48, 48 },
+		{ 101, 67, 48 },
+		{ 101, 96, 48 },
+		{ 66, -16, 0 },
+		{ 101, 0, 7 },
+		{ 101, 99, 48 },
+		{ 101, 0, 6 },
+		{ 101, 99, 48 },
+		{ 101, 0, 32 },
+		{ 101, 92, 48 },
+		{ 101, 0, 37 },
+		{ 101, 95, 48 },
+		{ 101, 0, 8 },
+		{ 101, 109, 48 },
+		{ -42, 22, 2 },
+		{ 101, 0, 35 },
+		{ 101, 111, 48 },
+		{ 101, 0, 5 },
+		{ 101, 103, 48 },
+		{ 101, 0, 33 },
+		{ 101, 0, 4 },
 		{ 0, 71, 36 }
 	};
 	yystate = state;
@@ -971,12 +925,11 @@ void YYLEXERNAME::yytables()
 		0,
 		0,
 		0,
-		0,
 		0
 	};
 	yybackup = backup;
 }
-#line 138 ".\\mylexer.l"
+#line 142 ".\\mylexer.l"
 
 
 /////////////////////////////////////////////////////////////////////////////
