@@ -4,9 +4,7 @@
 
 using namespace std;
 
-// ParseTree *tree = new ParseTree;
 ParseTree tree;
-// char *token;
 string token;
 
 TreeNode * TreeNode::stmt_node(StmtType type)
@@ -25,7 +23,6 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 		node->lineno = tree.all_line;
 	}
 
-	print_node(node);
 	return node;
 }
 
@@ -46,7 +43,6 @@ TreeNode * TreeNode::exp_node(ExpType type)
 		//node->data_type = Void;
 	}
 
-	print_node(node);
 	return node;
 }
 
@@ -67,7 +63,7 @@ int ParseTree::search_table(char *id)
 	return i;
 }
 
-void TreeNode::print_node(TreeNode *node)
+void ParseTree::print_node(TreeNode *node)
 {
 	ofstream fout("output.txt");
 	fout.setf(ios_base::left);//左对齐
@@ -100,10 +96,10 @@ void TreeNode::print_node(TreeNode *node)
 			fout << "value: " << node->attr.value;
 			break;
 		case id:
-			/*for (int i = 0; i < sizeof(node->attr.name); i++)
-				fout << "symbol: " << node->attr.name[i];*/
+			for (int i = 0; i < sizeof(node->attr.name); i++)
+				fout << "symbol: " << node->attr.name[i];
 			//fout << "symbol: " << node->attr.name;
-			fout << node->address;
+			//fout << node->address;
 			break;
 		}
 	}
@@ -114,7 +110,7 @@ void TreeNode::print_node(TreeNode *node)
 	for (int i = 0; i < MAXCHILDREN; i++)
 	{
 		if (node->child[i] == NULL)
-			continue;
+			break;
 		else
 		{
 			fout << node->child[i]->node_num << " ";
@@ -122,4 +118,17 @@ void TreeNode::print_node(TreeNode *node)
 		fout << endl;
 	}
 	fout.close();
+}
+
+//后序遍历把整棵树写到文件中
+//调用print_tree(tree.root);
+void ParseTree::print_tree(TreeNode *node)
+{
+	if (node != NULL)
+	{
+		for (int i = 0; i < MAXCHILDREN; i++)
+			if (node->child[i])
+				print_tree(node->child[i]);
+		print_node(node);
+	}
 }

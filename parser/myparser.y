@@ -6,6 +6,7 @@ ParserWizard generated YACC file->
 Date:2018Äê11ÔÂ15ÈÕ
 ****************************************************************************/
 #include <iostream>
+#include<fstream>
 #include "mylexer.h"
 #include "Tree.h"
 
@@ -432,9 +433,16 @@ int main(void)
 	myparser parser;
 	if (parser.yycreate(&lexer)) {
 		if (lexer.yycreate(&parser)) {
+			// freopen("./example.txt", "r",stdin);
+			 freopen("D:/input.txt", "r",stdin);
+
+			tree.print_tree(tree.root);
 			n = parser.yyparse();
+
+			freopen("CON", "r", stdin);
 		}
 	}
+	system("pause");
 	return n;
 }
 

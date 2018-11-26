@@ -60,8 +60,6 @@ struct TreeNode
 
 	TreeNode* stmt_node(StmtType type);
 	TreeNode* exp_node(ExpType type);
-
-	void print_node(TreeNode *node);
 };
 
 struct ParseTree
@@ -73,4 +71,7 @@ struct ParseTree
 	TreeNode * root;
 
 	int search_table(char *id);
+
+	void print_node(TreeNode *node);
+	void print_tree(TreeNode *node);
 };
