@@ -58,12 +58,10 @@ main()
 
 main()
 {
+	1;
+	int a;
 }
 
 
-出错显示代码段：
-	static size_t __CLRCALL_OR_CDECL length(const _Elem *_First)
-		{	// find length of null-terminated string
-		return (*_First == 0 ? 0
-			: _CSTD strlen(_First));
-		}
+往结点中传数值有问题
+考虑标识符如何写入文件

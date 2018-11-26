@@ -10,10 +10,10 @@ Date:2018年11月15日
 #include "Tree.h"
 
 using namespace std;
-// ParseTree tree;
-// TreeNode *node;
-TreeNode *node;
+
+TreeNode *node = new TreeNode;
 extern ParseTree tree;
+// extern char *token;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -274,8 +274,11 @@ id
 	:ID
 	{	
 		$$ = node->exp_node(id);
+		//for(int i = 0;i < sizeof($1->attr.name);i++)
+		//	$$->attr.name[i] = $1->attr.name[i];
+		//$$->attr.name = token;
 		$$->attr.name = $1->attr.name;
-		$$->address = $1->address;
+		//$$->address = $1->address;
 	}
 	//shift-reduce conflict on COMMA 移进规约冲突
 	//|ID COMMA id

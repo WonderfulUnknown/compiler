@@ -16,6 +16,7 @@ Date: 2018年11月15日
 // ParseTree tree;
 TreeNode node;
 extern ParseTree tree;
+extern string token;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,10 @@ main    {return MAIN;}
 //其他 
 {id}        {
 			   yylval->address = tree.search_table(yytext);
-			   yylval->attr.name = (yytext);
+			   //yylval->attr.name = (yytext);
+            token = string(yytext);
+            
+            yylval->attr.name = (char*)token.c_str();
             yylval->type.exp_type = id;
             return ID;
             }

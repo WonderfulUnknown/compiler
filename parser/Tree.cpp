@@ -6,6 +6,8 @@ using namespace std;
 
 // ParseTree *tree = new ParseTree;
 ParseTree tree;
+// char *token;
+string token;
 
 TreeNode * TreeNode::stmt_node(StmtType type)
 {
@@ -93,14 +95,20 @@ void TreeNode::print_node(TreeNode *node)
 		{
 		case oper:
 			fout << "op: " << node->attr.op;
+			break;
 		case number:
 			fout << "value: " << node->attr.value;
+			break;
 		case id:
-			fout << "symbol: " << node->attr.name;
+			/*for (int i = 0; i < sizeof(node->attr.name); i++)
+				fout << "symbol: " << node->attr.name[i];*/
+			//fout << "symbol: " << node->attr.name;
+			fout << node->address;
+			break;
 		}
 	}
 
-	//可能需要考虑idlist的输出
+	////可能需要考虑idlist的输出
 
 	fout << "Children:";
 	for (int i = 0; i < MAXCHILDREN; i++)
@@ -113,5 +121,5 @@ void TreeNode::print_node(TreeNode *node)
 		}
 		fout << endl;
 	}
-
+	fout.close();
 }
