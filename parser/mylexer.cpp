@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 67 of your 30 day trial period.
+* You are on day 68 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -19,7 +19,7 @@
 * C++ source file generated from mylexer.l.
 * 
 * Date: 11/27/18
-* Time: 15:17:44
+* Time: 18:51:00
 * 
 * ALex Version: 2.07
 ****************************************************************************/
@@ -506,30 +506,32 @@ return COLON;
 		{
 #line 130 ".\\mylexer.l"
 
+            yylval->address = -1;
 			   yylval->address = tree.search_table(yytext);
 			   //yylval->attr.name = (yytext);
-            token = string(yytext);
             
-            yylval->attr.name = (char*)token.c_str();
+            
+            yylval=new TreeNode;
+            strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;
             
-#line 518 "mylexer.cpp"
+#line 520 "mylexer.cpp"
 		}
 		break;
-#line 139 ".\\mylexer.l"
+#line 141 ".\\mylexer.l"
             
             //yyleng=strlen(yytext)
-#line 524 "mylexer.cpp"
+#line 526 "mylexer.cpp"
 	case 50:
 		{
-#line 141 ".\\mylexer.l"
+#line 143 ".\\mylexer.l"
  
                yylval->attr.value = atof(yytext);
                // yylval->type.exp_type = number;
                return NUMBER;
             
-#line 533 "mylexer.cpp"
+#line 535 "mylexer.cpp"
 		}
 		break;
 	default:
@@ -939,7 +941,7 @@ void YYLEXERNAME::yytables()
 	};
 	yybackup = backup;
 }
-#line 149 ".\\mylexer.l"
+#line 151 ".\\mylexer.l"
 
 
 /////////////////////////////////////////////////////////////////////////////

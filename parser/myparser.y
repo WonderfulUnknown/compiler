@@ -55,20 +55,20 @@ extern ParseTree tree;
 %token MAIN ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON
 %token ID NUMBER UNKNOWN
 
-%left COMMA
-%right ASSIGN
-%left OR
-%left AND
-%left IOR
-%left XOR
-%left INAD 
-%left EQ NEQ
-%left LT LE GT GE
-%left SHL SHR 
-%left PLUS MINUS
-%left MUL DIV MOD
-%right OPPOSITE NOT 
-%left LSBRACE RSBRACE LPRACE RPRACE 
+// %left COMMA
+// %right ASSIGN
+// %left OR
+// %left AND
+// %left IOR
+// %left XOR
+// %left INAD 
+// %left EQ NEQ
+// %left LT LE GT GE
+// %left SHL SHR 
+// %left PLUS MINUS
+// %left MUL DIV MOD
+// %right OPPOSITE NOT 
+// %left LSBRACE RSBRACE LPRACE RPRACE 
 
 %%
 
@@ -93,15 +93,14 @@ code
 	{
 		$$ = $1;
 		tree.root = $$;
-		// tree.print_tree(tree.root);
 	}
 	|code stmt	
 	{
 		$$ = new TreeNode;
 		$$->child[0] = $1;
 		$$->child[1] = $2;
+		tree.all_node++;
 		tree.root = $$;
-		tree.print_tree(tree.root);
 	}
 	;
 
@@ -281,22 +280,28 @@ id
 //避免左递归
 	:ID
 	{	
-		$$ = node->exp_node(id);
-		//for(int i = 0;i < sizeof($1->attr.name);i++)
-		//	$$->attr.name[i] = $1->attr.name[i];
-		//$$->attr.name = token;
-		$$->attr.name = $1->attr.name;
-		//$$->address = $1->address;
+		if($1->address != -1)//不在符号表中
+		{
+			$$ = node->exp_node(id);
+			strcpy($$->attr.name , $1->attr.name);
+			//$$->attr.name = $1->attr.name;
+			//$$->address = $1->address;
+		}
+		//若在，找到结点返回
 	}
 	//shift-reduce conflict on COMMA 移进规约冲突
-	//|ID COMMA id
-	|id COMMA ID
+	|ID COMMA id
+	//|id COMMA ID
 	{		
 		//可能需要考虑是否可以使用id赋值
-		YYSTYPE temp = $3;
-		while(temp->brother != NULL)
-			temp = temp->brother;
-		temp->brother = $1;
+		$$ = node->exp_node(id);
+		strcpy($$->attr.name , $1->attr.name);
+		//$$ = $1;
+		// YYSTYPE temp = $1;
+		//while(temp->brother != NULL)
+		//	temp = temp->brother;
+		//temp->brother = $3;
+		$$->brother = $3;
 	}
 	// |asgn_stmt		{$$ =$1;}
 	// |asgn_stmt COMMA id
@@ -337,7 +342,6 @@ asgn_stmt
 dec_stmt
 	:type id 
 	{
-		//type中的值都是mylexer->h中define的值,注意
 		$$ = node->stmt_node(dec_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $2;

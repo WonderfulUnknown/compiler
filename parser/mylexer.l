@@ -128,11 +128,13 @@ main    {return MAIN;}
 
 //ÆäËû 
 {id}        {
+            yylval->address = -1;
 			   yylval->address = tree.search_table(yytext);
 			   //yylval->attr.name = (yytext);
-            token = string(yytext);
             
-            yylval->attr.name = (char*)token.c_str();
+            
+            yylval=new TreeNode;
+            strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;
             }

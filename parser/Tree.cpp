@@ -6,7 +6,7 @@ using namespace std;
 
 ParseTree tree;
 string token;
-//string stmt_type[6] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt"};
+
 char stmt_type[6][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt" };
 char data_type[6][20] = { "integer", "double", "float","char","bool","void" };
 char exp_type[3][10] = { "op","number","id" }; 
@@ -25,7 +25,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 
 		node->node_type = stmt;
 		node->type.stmt_type = type;
-		node->lineno = tree.all_line;
+		node->lineno = ++tree.all_line;
 		node->node_num = tree.all_node++;
 	}
 
@@ -45,7 +45,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 
 		node->node_type = exps;
 		node->type.exp_type = type;
-		node->lineno = tree.all_line;
+		node->lineno = ++tree.all_line;
 		node->node_num = tree.all_node++;
 		//node->data_type = Void;
 	}
@@ -165,14 +165,14 @@ void ParseTree::print_node(TreeNode *node)
 		case id:
 			cout << "symbol:";
 			cout.width(4);
-			for (int i = 0; i < sizeof(node->attr.name); i++)
-				if(node->attr.name)
-					cout <<  node->attr.name[i];
+			// for (int i = 0; i < sizeof(node->attr.name); i++)
+			// 	if(node->attr.name)
+			// 		cout <<  node->attr.name[i];
+			cout<<node->attr.name;
 			break;
 		}
 	}
 
-	////可能需要考虑idlist的输出
 	cout << "Children:";
 	for (int i = 0; i < MAXCHILDREN; i++)
 	{
@@ -184,6 +184,10 @@ void ParseTree::print_node(TreeNode *node)
 		}
 	}
 	cout << endl;
+
+	//多个id输出
+	if (node->brother)
+		print_node(node->brother);
 	//cout.close();
 }
 //后序遍历把整棵树写到文件中
@@ -193,8 +197,10 @@ void ParseTree::print_tree(TreeNode *node)
 	if (node != NULL)
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
+		{
 			if (node->child[i])
 				print_tree(node->child[i]);
+		}
 		print_node(node);
 	}
 }

@@ -53,7 +53,8 @@ struct TreeNode
 		//Operator oper;
 		int op;
 		double value;
-		char * name;
+		//char * name;
+		char name[50];
 		int data_type;
 	} attr;
 
