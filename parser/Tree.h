@@ -67,6 +67,7 @@ struct ParseTree
 	char symbol_table[1000][50];//符号表
 	int table_number = 0; //记录符号表中储存的个数
 	int all_line = 0;//记录代码的行数
+	int all_node = 0;//记录树中结点数量
 
 	TreeNode * root;
 

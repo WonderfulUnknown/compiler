@@ -18,8 +18,8 @@
 # mylexer.v
 # Lex verbose file generated from mylexer.l.
 # 
-# Date: 11/26/18
-# Time: 21:37:58
+# Date: 11/27/18
+# Time: 15:17:44
 # 
 # ALex Version: 2.07
 #############################################################################

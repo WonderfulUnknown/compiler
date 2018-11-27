@@ -89,12 +89,19 @@ c_program
 
 //定义代码段
 code
-	:stmt 		{$$ = $1;}
+	:stmt 		
+	{
+		$$ = $1;
+		tree.root = $$;
+		// tree.print_tree(tree.root);
+	}
 	|code stmt	
 	{
-		tree.root->child[0] = $1;
-		tree.root->child[1] = $2;
-		$$ = tree.root;
+		$$ = new TreeNode;
+		$$->child[0] = $1;
+		$$->child[1] = $2;
+		tree.root = $$;
+		tree.print_tree(tree.root);
 	}
 	;
 
@@ -304,12 +311,13 @@ exp
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
-	|LPRACE exp RPRACE		{$$=$2;}
+	|LPRACE exp RPRACE		{$$ = $2;}
 	|NUMBER	
 	{
 		$$ = node->exp_node(number);
-		$$->attr.value = $2->attr.value;
+		$$->attr.value = $1->attr.value;
 	}
+	|id	{$$ = $1;}
 	;
 
 //定义赋值语句
@@ -436,10 +444,11 @@ int main(void)
 			// freopen("./example.txt", "r",stdin);
 			 freopen("D:/input.txt", "r",stdin);
 
-			tree.print_tree(tree.root);
 			n = parser.yyparse();
+			//tree.print_tree(tree.root);不执行
 
 			freopen("CON", "r", stdin);
+			tree.print_tree(tree.root);
 		}
 	}
 	system("pause");

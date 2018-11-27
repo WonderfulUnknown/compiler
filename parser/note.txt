@@ -43,16 +43,6 @@ main()
 12: if statement,                      Children: 6    11
 13: compound statement,                Children: 3	  12
 
-main()
-{
-	1;
-	int a;
-}
-
-main()
-{
-	int a, b;
-}
 
 tips:
 给union中的一个值赋值，所有的值都一样。
@@ -69,4 +59,7 @@ problem:
 3.每个节点编号
 4.树的根节点
 
-全是语法错误，无法识别
+if语句不能判断
+int a ;
+a = a + 1;读取字符串错误
+a 已有还是会创建结点
