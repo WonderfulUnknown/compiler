@@ -9,7 +9,7 @@ string token;
 
 char stmt_type[6][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt" };
 char data_type[6][20] = { "integer", "double", "float","char","bool","void" };
-char exp_type[3][10] = { "op","number","id" }; 
+char exp_type[3][15] = { "expr","const","ID" }; 
 char op[25][3] = { "+", "-", "*", "/", "%", "++", "--" ,"&" ,"|" , "^", "~", "<<", ">>", "==", ">", "<",  ">=", "<=", "!=", "&&" ,"||", "!" };
 
 TreeNode * TreeNode::stmt_node(StmtType type)

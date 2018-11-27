@@ -11,10 +11,8 @@ Date: 2018年11月15日
 #include "myparser.h"
 #include "Tree.h"
 
-//全局变量一个工程下有一个即可，不这样写error link 2005
-// TreeNode *node;
-// ParseTree tree;
-TreeNode node;
+//全局变量一个工程下有一个即可，否则error link 2005
+
 extern ParseTree tree;
 extern string token;
 %}
@@ -58,7 +56,7 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 %{
 	// extract yylval for use later on in actions
 	YYSTYPE YYFAR& yylval = *(YYSTYPE YYFAR*)yyparserptr->yylvalptr;
-	yylval = &node;
+	yylval = new TreeNode;
 %}
 
 // place your Lex rules here
@@ -78,7 +76,10 @@ bool    {return BOOL;}
 void    {return VOID;}
 
 //算术运算
-"+"     {return PLUS;}
+"+"     {		
+   // yylval = yylval->exp_node(oper);
+	//	yylval->attr.op = PLUS;
+      return PLUS;}
 "-"     {return MINUS;}
 "*"     {return MUL;}
 "/"     {return DIV;}
@@ -131,8 +132,7 @@ main    {return MAIN;}
             yylval->address = -1;
 			   yylval->address = tree.search_table(yytext);
 			   //yylval->attr.name = (yytext);
-            
-            yylval=new TreeNode;
+            //yylval=new TreeNode;
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;

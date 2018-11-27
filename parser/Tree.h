@@ -48,9 +48,8 @@ struct TreeNode
 		ExpType exp_type;
 	} type;
 
-	union
+	union NodeAttr
 	{
-		//Operator oper;
 		int op;
 		double value;
 		//char * name;

@@ -14,7 +14,6 @@ using namespace std;
 
 TreeNode *node = new TreeNode;
 extern ParseTree tree;
-// extern char *token;
 %}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +77,7 @@ extern ParseTree tree;
 // place your YACC rules here (there must be at least one)
 
 //定义main函数
-c_program
+program
 	:MAIN LPRACE RPRACE LBRACE code RBRACE			{$$=$5;}
 	|MAIN LPRACE VOID RPRACE LBRACE code RBRACE		{$$=$6;}
 	|VOID MAIN LPRACE RPRACE LBRACE code RBRACE		{$$=$6;}
@@ -96,11 +95,15 @@ code
 	}
 	|code stmt	
 	{
+		//????
 		$$ = new TreeNode;
 		$$->child[0] = $1;
 		$$->child[1] = $2;
-		tree.all_node++;
+
+		// $$ = $1;
+		// $$->brother = $2;
 		tree.root = $$;
+		tree.all_node++;
 	}
 	;
 
@@ -154,6 +157,11 @@ op
 	:ari_op		{$$ = $1;}
 	|rel_op		{$$ = $1;}
 	|log_op		{$$ = $1;}
+	|ASSIGN
+	{
+		$$ = node->exp_node(oper);
+		$$->attr.op = ASSIGN;
+	}
 	;
 
 //定义算术运算符
@@ -222,14 +230,15 @@ ari_op
 	{
 		$$ = node->exp_node(oper);
 		$$->attr.op = SHR;
-	};
+	}
+	;
 
 //定义关系运算符
 rel_op
 	:EQ
 	{
 		$$ = node->exp_node(oper);
-		$$->attr.op = EQ;
+		$$->attr.op = 276;
 	}
 	|GT
 	{
@@ -255,7 +264,8 @@ rel_op
 	{
 		$$ = node->exp_node(oper);
 		$$->attr.op = NEQ;
-	};
+	}
+	;
 
 //定义逻辑运算符
 log_op
@@ -273,7 +283,8 @@ log_op
 	{
 		$$ = node->exp_node(oper);
 		$$->attr.op = OPPOSITE;
-	};
+	}
+	;
 
 //定义id
 id
@@ -284,10 +295,15 @@ id
 		{
 			$$ = node->exp_node(id);
 			strcpy($$->attr.name , $1->attr.name);
-			//$$->attr.name = $1->attr.name;
 			//$$->address = $1->address;
 		}
 		//若在，找到结点返回
+	}
+	|id COMMA ID //id按顺序
+	{		
+		$$ = node->exp_node(id);
+		strcpy($$->attr.name , $3->attr.name);
+		$$->brother = $1;
 	}
 	//shift-reduce conflict on COMMA 移进规约冲突
 	// |ID COMMA id
@@ -296,24 +312,17 @@ id
 	// 	strcpy($$->attr.name , $1->attr.name);
 	// 	$$->brother = $3;
 	// }
-	|id COMMA ID //id按顺序
-	{		
-		$$ = node->exp_node(id);
-		strcpy($$->attr.name , $3->attr.name);
-		$$->brother = $1;
-	}
 	//|asgn_stmt		{$$ =$1;}
 	// |asgn_stmt COMMA id
 	;
 
 //定义表达式
 exp 
-	//移进规约冲突，可能是因为不同的op优先级不一样
 	:exp op exp		
 	{
-		$$ = node->exp_node(oper);
-		$$->child[0] = $1;
-		$$->child[1] = $3;
+		$$ = $2;
+		$2->child[0] = $1;
+		$2->child[1] = $3;
 	}
 	|LPRACE exp RPRACE		{$$ = $2;}
 	|NUMBER	
@@ -328,7 +337,12 @@ exp
 asgn_stmt
 	:id ASSIGN exp
 	{
-		$$ = node->exp_node($2->type.exp_type);
+		$$ = node->stmt_node(asgn_stmt);
+		$$->child[0] = $1;
+		$$->child[1] = $3;
+		// $$->child[0] = $2;
+		// $2->child[0] = $1;
+		// $2->child[1] = $3;
 	}
 	|asgn_stmt COMMA id
 	{
