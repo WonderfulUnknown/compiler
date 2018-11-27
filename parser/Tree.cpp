@@ -6,8 +6,9 @@ using namespace std;
 
 ParseTree tree;
 string token;
+//int count = 0;
 
-char stmt_type[6][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt" };
+char stmt_type[7][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt","com_stmt" };
 char data_type[6][20] = { "integer", "double", "float","char","bool","void" };
 char exp_type[3][15] = { "expr","const","ID" };
 char op[25][3] = { "+", "-", "*", "/", "%", "++", "--" ,"&" ,"|" , "^", "~", "<<", ">>", "==", ">", "<",  ">=", "<=", "!=", "&&" ,"||", "!" };
@@ -26,7 +27,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 		node->node_type = stmt;
 		node->type.stmt_type = type;
 		node->lineno = ++tree.all_line;
-		node->node_num = tree.all_node++;
+		//node->node_num = tree.all_node++;
 	}
 
 	return node;
@@ -46,8 +47,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 		node->node_type = exps;
 		node->type.exp_type = type;
 		node->lineno = ++tree.all_line;
-		node->node_num = tree.all_node++;
-		//node->data_type = Void;
+		//node->node_num = tree.all_node++;
 	}
 
 	return node;
@@ -80,11 +80,11 @@ void ParseTree::print_child(TreeNode *node)
 void ParseTree::print_node(TreeNode *node)
 {
 	//先输出兄弟节点
-//	if (node->brother)
+	//if (node->brother)
 	//	print_node(node->brother);
 
 	cout.setf(ios_base::left);//左对齐
-
+	node->node_num = tree.all_node++;
 	cout.width(2);
 	cout << node->node_num;
 	cout << ": ";
@@ -133,8 +133,7 @@ void ParseTree::print_node(TreeNode *node)
 
 	cout << endl;
 }
-//后序遍历把整棵树写到文件中
-//调用print_tree(tree.root);
+//后序遍历输出整棵树
 void ParseTree::print_tree(TreeNode *node)
 {
 	if (node != NULL)

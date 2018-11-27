@@ -92,12 +92,13 @@ code
 	//|stmt code
 	|code stmt	
 	{
-		// $$ = new TreeNode;
-		// $$->child[0] = $1;
-		// $$->child[1] = $2;
+		$$ = node->stmt_node(com_stmt);
+		$$->child[0] = $1;
+		$$->child[1] = $2;
 
-		$$ = $2;
-		$$->brother = $1;
+		// $$ = $2;
+		// $$->brother = $1;
+		
 		tree.root = $$;
 	}
 	;
@@ -315,9 +316,10 @@ id
 exp 
 	:exp op exp	//按exp op exp 顺序创建结点	
 	{
-		$$ = $2;
+
 		$2->child[0] = $1;
 		$2->child[1] = $3;
+		$$ = $2;
 	}
 	|LPRACE exp RPRACE		{$$ = $2;}
 	|NUMBER	

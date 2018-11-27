@@ -11,7 +11,8 @@ typedef enum
 	dec_stmt,
 	if_stmt,
 	while_stmt,
-	for_stmt//,
+	for_stmt,
+	com_stmt//,
 	// input_stmt,
 	// output_stmt
 } StmtType;
