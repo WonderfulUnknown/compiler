@@ -54,20 +54,20 @@ extern ParseTree tree;
 %token MAIN ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON
 %token ID NUMBER UNKNOWN
 
-// %left COMMA
-// %right ASSIGN
-// %left OR
-// %left AND
-// %left IOR
-// %left XOR
-// %left INAD 
-// %left EQ NEQ
-// %left LT LE GT GE
-// %left SHL SHR 
-// %left PLUS MINUS
-// %left MUL DIV MOD
-// %right OPPOSITE NOT 
-// %left LSBRACE RSBRACE LPRACE RPRACE 
+%left COMMA
+%right ASSIGN
+%left OR
+%left AND
+%left IOR
+%left XOR
+%left INAD 
+%left EQ NEQ
+%left LT LE GT GE
+%left SHL SHR 
+%left PLUS MINUS
+%left MUL DIV MOD
+%right OPPOSITE NOT 
+%left LSBRACE RSBRACE LPRACE RPRACE 
 
 %%
 
@@ -88,22 +88,17 @@ program
 
 //定义代码段
 code
-	:stmt 		
-	{
-		$$ = $1;
-		tree.root = $$;
-	}
+	:stmt {$$ = $1;}//tree.root = $$;
+	//|stmt code
 	|code stmt	
 	{
-		//????
-		$$ = new TreeNode;
-		$$->child[0] = $1;
-		$$->child[1] = $2;
+		// $$ = new TreeNode;
+		// $$->child[0] = $1;
+		// $$->child[1] = $2;
 
-		// $$ = $1;
-		// $$->brother = $2;
+		$$ = $2;
+		$$->brother = $1;
 		tree.root = $$;
-		tree.all_node++;
 	}
 	;
 
@@ -112,9 +107,9 @@ stmt
 	:exp SIMICOLON			{$$ = $1;}
 	|asgn_stmt SIMICOLON	{$$ = $1;}
 	|dec_stmt SIMICOLON		{$$ = $1;}
-	|if_stmt SIMICOLON		{$$ = $1;}
-	|while_stmt SIMICOLON	{$$ = $1;}
-	|for_stmt SIMICOLON		{$$ = $1;}
+	|if_stmt 				{$$ = $1;}
+	|while_stmt 			{$$ = $1;}
+	|for_stmt 				{$$ = $1;}
 	// |input_stmt SIMICOLON	{$$ = $1;}
 	// |output_stmt SIMICOLON	{$$ = $1;}
 	;
@@ -318,7 +313,7 @@ id
 
 //定义表达式
 exp 
-	:exp op exp		
+	:exp op exp	//按exp op exp 顺序创建结点	
 	{
 		$$ = $2;
 		$2->child[0] = $1;
@@ -340,9 +335,6 @@ asgn_stmt
 		$$ = node->stmt_node(asgn_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
-		// $$->child[0] = $2;
-		// $2->child[0] = $1;
-		// $2->child[1] = $3;
 	}
 	|asgn_stmt COMMA id
 	{
@@ -368,33 +360,40 @@ dec_stmt
 if_stmt
 	//考虑DFA->NFA
 	//没考虑else if的实现
-	:IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	:IF LPRACE exp RPRACE stmt
 	{
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
-		$$->child[1] = $6;
-		$$->child[2] = $10;
-	}
-	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-	}
-	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-		$$->child[2] = $10;
-	}
-	|IF LPRACE id RPRACE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
+		$$->child[1] = $5;
 	}
 	;
+	// :IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// 	$$->child[2] = $10;
+	// }
+	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// }
+	// |IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// 	$$->child[2] = $10;
+	// }
+	// |IF LPRACE id RPRACE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// }
+	// ;
 
 //定义while语句
 while_stmt       

@@ -1,8 +1,3 @@
-// typedef enum {StmtK,ExpK} NodeKind;
-// typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
-// typedef enum {OpK,ConstK,IdK} ExpKind;
-// typedef enum {Void,Integer,Boolean} ExpType;
-
 typedef enum
 {
 	stmt,
@@ -41,7 +36,7 @@ struct TreeNode
 	int address;//标识符在符号表中的位置
 
 	NodeType node_type;
-	
+
 	union
 	{
 		StmtType stmt_type;
