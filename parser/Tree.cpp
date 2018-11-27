@@ -126,9 +126,19 @@ int ParseTree::search_table(char *id)
 //	}
 //	cout.close();
 //}
+void ParseTree::print_child(TreeNode *node)
+{
+	if (node->brother)
+		print_child(node->brother);
+	cout << node->node_num << " ";
+}
+
 void ParseTree::print_node(TreeNode *node)
 {
-	//ofstream cout("output.txt");
+	//多个id输出
+	if (node->brother)
+		print_node(node->brother);
+
 	cout.setf(ios_base::left);//左对齐
 
 	cout.width(2);
@@ -154,41 +164,30 @@ void ParseTree::print_node(TreeNode *node)
 		{
 		case oper:
 			cout << "op:";
-			cout.width(4);
+			cout.width(7);
 			cout<< op[node->attr.op -263];//defin PLUS 263
+			//cout << node->attr.op;
 			break;
 		case number:
 			cout << "value:";
-			cout.width(4);
+			cout.width(7);
 			cout << node->attr.value;
 			break;
 		case id:
 			cout << "symbol:";
-			cout.width(4);
-			// for (int i = 0; i < sizeof(node->attr.name); i++)
-			// 	if(node->attr.name)
-			// 		cout <<  node->attr.name[i];
+			cout.width(7);
 			cout<<node->attr.name;
 			break;
 		}
 	}
-
 	cout << "Children:";
 	for (int i = 0; i < MAXCHILDREN; i++)
 	{
-		if (node->child[i] == NULL)
-			break;
-		else
-		{
-			cout << node->child[i]->node_num << " ";
-		}
+		if (node->child[i])
+			print_child(node->child[i]);
 	}
-	cout << endl;
 
-	//多个id输出
-	if (node->brother)
-		print_node(node->brother);
-	//cout.close();
+	cout << endl;
 }
 //后序遍历把整棵树写到文件中
 //调用print_tree(tree.root);

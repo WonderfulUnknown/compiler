@@ -132,7 +132,6 @@ main    {return MAIN;}
 			   yylval->address = tree.search_table(yytext);
 			   //yylval->attr.name = (yytext);
             
-            
             yylval=new TreeNode;
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;

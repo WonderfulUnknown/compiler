@@ -54,14 +54,17 @@ tips:
 2.整棵树写进文件
 
 problem:
-1.行号
-2.树中孩子数量
-3.每个节点编号
-4.树的根节点
+1.行号lineno
+2.if语句不能判断
+3.int a ;
+  a = a + 1;读取字符串错误
+4.a 已有还是会创建结点
+5.int a;
+  int b;出错
 
-if语句不能判断
-int a ;
-a = a + 1;读取字符串错误
-a 已有还是会创建结点
-int a;
-int b;出错
+done:
+1.识别多个idlist
+2.递归输出idlist,children
+
+todo:
+在lexer中创建结点，而不是yacc

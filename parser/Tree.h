@@ -76,4 +76,5 @@ struct ParseTree
 
 	void print_node(TreeNode *node);
 	void print_tree(TreeNode *node);
+	void print_child(TreeNode *node);
 };

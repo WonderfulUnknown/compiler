@@ -19,7 +19,7 @@
 * C++ source file generated from mylexer.l.
 * 
 * Date: 11/27/18
-* Time: 18:51:00
+* Time: 20:11:26
 * 
 * ALex Version: 2.07
 ****************************************************************************/
@@ -510,28 +510,27 @@ return COLON;
 			   yylval->address = tree.search_table(yytext);
 			   //yylval->attr.name = (yytext);
             
-            
             yylval=new TreeNode;
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;
             
-#line 520 "mylexer.cpp"
+#line 519 "mylexer.cpp"
 		}
 		break;
-#line 141 ".\\mylexer.l"
+#line 140 ".\\mylexer.l"
             
             //yyleng=strlen(yytext)
-#line 526 "mylexer.cpp"
+#line 525 "mylexer.cpp"
 	case 50:
 		{
-#line 143 ".\\mylexer.l"
+#line 142 ".\\mylexer.l"
  
                yylval->attr.value = atof(yytext);
                // yylval->type.exp_type = number;
                return NUMBER;
             
-#line 535 "mylexer.cpp"
+#line 534 "mylexer.cpp"
 		}
 		break;
 	default:
@@ -941,7 +940,7 @@ void YYLEXERNAME::yytables()
 	};
 	yybackup = backup;
 }
-#line 151 ".\\mylexer.l"
+#line 150 ".\\mylexer.l"
 
 
 /////////////////////////////////////////////////////////////////////////////

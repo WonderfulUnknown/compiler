@@ -277,7 +277,7 @@ log_op
 
 //定义id
 id
-//避免左递归
+//避免左递归？
 	:ID
 	{	
 		if($1->address != -1)//不在符号表中
@@ -290,20 +290,19 @@ id
 		//若在，找到结点返回
 	}
 	//shift-reduce conflict on COMMA 移进规约冲突
-	|ID COMMA id
-	//|id COMMA ID
+	// |ID COMMA id
+	// {
+	// 	$$ = node->exp_node(id);
+	// 	strcpy($$->attr.name , $1->attr.name);
+	// 	$$->brother = $3;
+	// }
+	|id COMMA ID //id按顺序
 	{		
-		//可能需要考虑是否可以使用id赋值
 		$$ = node->exp_node(id);
-		strcpy($$->attr.name , $1->attr.name);
-		//$$ = $1;
-		// YYSTYPE temp = $1;
-		//while(temp->brother != NULL)
-		//	temp = temp->brother;
-		//temp->brother = $3;
-		$$->brother = $3;
+		strcpy($$->attr.name , $3->attr.name);
+		$$->brother = $1;
 	}
-	// |asgn_stmt		{$$ =$1;}
+	//|asgn_stmt		{$$ =$1;}
 	// |asgn_stmt COMMA id
 	;
 
