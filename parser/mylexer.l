@@ -131,17 +131,14 @@ main    {return MAIN;}
 {id}        {
             yylval->address = -1;
 			   yylval->address = tree.search_table(yytext);
-			   //yylval->attr.name = (yytext);
             //yylval=new TreeNode;
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;
             }
             
-            //yyleng=strlen(yytext)
 {number}    { 
                yylval->attr.value = atof(yytext);
-               // yylval->type.exp_type = number;
                return NUMBER;
             }
 

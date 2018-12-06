@@ -287,7 +287,6 @@ log_op
 
 //定义id
 id
-//避免左递归？
 	:ID
 	{	
 		if($1->address != -1)//不在符号表中
@@ -462,8 +461,7 @@ int main(void)
 	myparser parser;
 	if (parser.yycreate(&lexer)) {
 		if (lexer.yycreate(&parser)) {
-			// freopen("./example.txt", "r",stdin);
-			 freopen("D:/input.txt", "r",stdin);
+			freopen("D:/input.txt", "r",stdin);
 
 			n = parser.yyparse();
 			//tree.print_tree(tree.root);不执行
