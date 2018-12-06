@@ -21,5 +21,5 @@ TargetSyntaxColouring=3
 [Output]
 WindowPlacement1=0 1 -1 -1 -1 -1 454 0 908 632
 WindowOrder1=1
-Position1=0 1
-Cursor1=0 39 0 39
+Position1=57 1
+Cursor1=72 12 96 12

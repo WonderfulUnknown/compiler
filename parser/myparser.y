@@ -12,7 +12,8 @@ Date:2018年11月15日
 
 using namespace std;
 
-TreeNode *node = new TreeNode;
+//TreeNode *node = new TreeNode;
+TreeNode *node = node->stmt_node(com_stmt);
 extern ParseTree tree;
 %}
 
@@ -88,18 +89,20 @@ program
 
 //定义代码段
 code
-	:stmt {$$ = $1;}//tree.root = $$;
+	:stmt {$$ = $1;}//tree.root = $$;只有一个语句时根结点
 	//|stmt code
 	|code stmt	
 	{
-		$$ = node->stmt_node(com_stmt);
-		$$->child[0] = $1;
-		$$->child[1] = $2;
+		// $$ = node->stmt_node(com_stmt);
+		// $$->child[0] = $1;
+		// $$->child[1] = $2;
 
-		// $$ = $2;
-		// $$->brother = $1;
+		$$ = $2;
+		$$->brother = $1;
 		
-		tree.root = $$;
+		node->child[0] = $$;
+		// tree.root = $$;
+		tree.root = node;
 	}
 	;
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 68 of your 30 day trial period.
+* You are on day 77 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -18,8 +18,8 @@
 * mylexer.h
 * C++ header file generated from mylexer.l.
 * 
-* Date: 11/28/18
-* Time: 00:55:09
+* Date: 12/06/18
+* Time: 21:07:06
 * 
 * ALex Version: 2.07
 ****************************************************************************/
