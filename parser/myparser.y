@@ -6,7 +6,7 @@ ParserWizard generated YACC file->
 Date:2018年11月15日
 ****************************************************************************/
 #include <iostream>
-#include<fstream>
+#include <fstream>
 #include "mylexer.h"
 #include "Tree.h"
 
@@ -14,6 +14,7 @@ using namespace std;
 
 //TreeNode *node = new TreeNode;
 TreeNode *node = node->stmt_node(com_stmt);
+//TreeNode *temp;
 extern ParseTree tree;
 %}
 
@@ -89,7 +90,11 @@ program
 
 //定义代码段
 code
-	:stmt {$$ = $1;}//tree.root = $$;只有一个语句时根结点
+	:stmt 
+	{
+		$$ = $1;
+		tree.root = $$;//只有一个语句时根结点
+	}
 	//|stmt code
 	|code stmt	
 	{
@@ -123,32 +128,38 @@ type
 	:INT	
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = INT;
+		$$->data_type = INT;
+		// temp = $$->child[0];	
+		// while(temp)
+		// {
+		// 	temp->data_type = INT;
+		// 	temp = temp->brother;			
+		// }
 	}
 	|DOUBLE
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = DOUBLE;
+		$$->data_type = DOUBLE;
 	}
 	|FLOAT
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = FLOAT;
+		$$->data_type = FLOAT;
 	}
 	|CHAR
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = CHAR;
+		$$->data_type = CHAR;
 	}
 	|BOOL
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = BOOL;
+		$$->data_type = BOOL;
 	}
 	|VOID
 	{
 		$$ = node->stmt_node(type_spe);
-		$$->attr.data_type = VOID;
+		$$->data_type = VOID;
 	};
 
 //定义op
@@ -293,6 +304,7 @@ id
 		{
 			$$ = node->exp_node(id);
 			strcpy($$->attr.name , $1->attr.name);
+			$$->data_type = INT;
 			//$$->address = $1->address;
 		}
 		//若在，找到结点返回
@@ -461,15 +473,21 @@ int main(void)
 	myparser parser;
 	if (parser.yycreate(&lexer)) {
 		if (lexer.yycreate(&parser)) {
-			freopen("D:/input.txt", "r",stdin);
+
+			ofstream fout("error.txt");	
+			fout.close();//清空error文件
+
+			freopen("input.txt", "r",stdin);
 
 			n = parser.yyparse();
 			//tree.print_tree(tree.root);不执行
 
 			freopen("CON", "r", stdin);
+			tree.check_idtype(tree.root);
 			tree.print_tree(tree.root);
 		}
 	}
+
 	system("pause");
 	return n;
 }

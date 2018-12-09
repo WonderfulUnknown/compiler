@@ -32,6 +32,7 @@ struct TreeNode
 
 	int lineno;//结点在代码中的行号
 	int node_num;//结点相对于整棵树的编号
+	int data_type;//记录类型
 
 	//需要的时候用名字去查即可，可删除
 	int address;//标识符在符号表中的位置
@@ -50,7 +51,6 @@ struct TreeNode
 		double value;
 		//char * name;
 		char name[50];
-		int data_type;
 	} attr;
 
 
@@ -72,6 +72,7 @@ struct ParseTree
 	void print_node(TreeNode *node);
 	void print_tree(TreeNode *node);
 	void print_child(TreeNode *node);
+	void check_idtype(TreeNode *node);
 	void check_node(TreeNode *node);
-	void write_error(TreeNode *node,char error[])
+	void write_error(TreeNode *node, char error[]);
 };
