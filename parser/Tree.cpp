@@ -160,17 +160,28 @@ void ParseTree::print_tree(TreeNode *node)
 
 void ParseTree::check_idtype(TreeNode *node)
 {
+	TreeNode *temp;
+	int addr;
 	if (node != NULL)
 	{
 		if (node->type.stmt_type == dec_stmt)
 		{
-			TreeNode *temp;
 			temp = node->child[1];
 			while (temp)
 			{
 				temp->data_type = node->child[0]->data_type;
+				
+				addr = search_table(temp->attr.name);
+				id_type[addr] = temp->data_type;
+
 				temp = temp->brother;
 			}
+		}
+		//id的类型值从id_type中获取
+		if (node->type.exp_type == id)
+		{
+			addr = search_table(node->attr.name);
+			node->data_type = id_type[addr];
 		}
 		if (node->brother)
 			check_idtype(node->brother);
@@ -191,7 +202,10 @@ void ParseTree::check_node(TreeNode *node)
 		{
 		case oper:
 			if ((node->child[0]->data_type != INT) || (node->child[1]->data_type != INT))
+			{
 				write_error(node, "Op applied to non-integer");
+				break;
+			}
 			if ((node->attr.op == EQ) || (node->attr.op == LT))
 				node->data_type = BOOL;
 			else
@@ -272,3 +286,11 @@ void ParseTree::write_error(TreeNode *node, char error[])
 
 	fout.close();
 }
+
+//TreeNode * get_node(int address)
+//{
+//	TreeNode *node = new TreeNode;
+//	string id;
+//	id = tree.symbol_table[address];
+//	return node;
+//}

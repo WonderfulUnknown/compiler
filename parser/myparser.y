@@ -129,12 +129,6 @@ type
 	{
 		$$ = node->stmt_node(type_spe);
 		$$->data_type = INT;
-		// temp = $$->child[0];	
-		// while(temp)
-		// {
-		// 	temp->data_type = INT;
-		// 	temp = temp->brother;			
-		// }
 	}
 	|DOUBLE
 	{
@@ -299,15 +293,11 @@ log_op
 //定义id
 id
 	:ID
-	{	
-		if($1->address != -1)//不在符号表中
-		{
-			$$ = node->exp_node(id);
-			strcpy($$->attr.name , $1->attr.name);
-			$$->data_type = INT;
-			//$$->address = $1->address;
-		}
-		//若在，找到结点返回
+	{
+		$$ = node->exp_node(id);
+		strcpy($$->attr.name, $1->attr.name);
+		$$->data_type = INT;
+		//$$->address = $1->address;
 	}
 	|id COMMA ID //id按顺序
 	{		

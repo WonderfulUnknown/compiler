@@ -61,6 +61,9 @@ struct TreeNode
 struct ParseTree
 {
 	char symbol_table[1000][50];//符号表
+	//char id_type[1000][5];//用于存储各个id的类型
+	int id_type[1000];
+
 	int table_number = 0; //记录符号表中储存的个数
 	int all_line = 0;//记录代码的行数
 	int all_node = 0;//记录树中结点数量
@@ -75,4 +78,5 @@ struct ParseTree
 	void check_idtype(TreeNode *node);
 	void check_node(TreeNode *node);
 	void write_error(TreeNode *node, char error[]);
+	//TreeNode* get_node(int address);
 };
