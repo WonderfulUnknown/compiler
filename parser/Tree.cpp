@@ -233,8 +233,8 @@ void ParseTree::check_node(TreeNode *node)
 				node->data_type = node->child[0]->data_type;
 			break;
 		case asgn_stmt:
-			if (node->child[0]->data_type != INT)
-				write_error(node->child[0], "asgn_stmt of non-integer value");
+			if (node->child[0]->data_type != node->child[1]->data_type)
+				write_error(node, "asgn_stmt of different type");
 			else
 				node->data_type = node->child[0]->data_type;
 			break;

@@ -348,6 +348,12 @@ asgn_stmt
 		$$->child[0] = $1;
 		$$->child[1] = $3;
 	}
+	|id ASSIGN asgn_stmt
+	{
+		$$ = node->stmt_node(asgn_stmt);
+		$$->child[0] = $1;
+		$$->child[1] = $3;
+	}
 	;
 //¶¨ÒåÉùÃ÷Óï¾ä
 dec_stmt
