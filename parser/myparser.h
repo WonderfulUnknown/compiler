@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 82 of your 30 day trial period.
+* You are on day 83 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -18,8 +18,8 @@
 * myparser.h
 * C++ header file generated from myparser.y.
 * 
-* Date: 12/11/18
-* Time: 19:07:11
+* Date: 12/12/18
+* Time: 20:30:19
 * 
 * AYACC Version: 2.07
 ****************************************************************************/
@@ -61,7 +61,7 @@ protected:
 	virtual void yycopyattribute(void YYFAR* dest, const void YYFAR* src, int count);
 
 public:
-#line 28 ".\\myparser.y"
+#line 26 ".\\myparser.y"
 
 	// place any extra class members here
 
@@ -72,7 +72,7 @@ public:
 #define YYPARSERNAME myparser
 #endif
 
-#line 43 ".\\myparser.y"
+#line 41 ".\\myparser.y"
 
 #ifndef YYSTYPE
 #define YYSTYPE TreeNode*	//所有的$都是TreeNode*类型

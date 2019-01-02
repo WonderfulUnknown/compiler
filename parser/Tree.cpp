@@ -7,7 +7,7 @@ using namespace std;
 
 ParseTree tree;
 
-char stmt_type[7][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt",	"while_stmt","for_stmt","com_stmt" };
+char stmt_type[9][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt","while_stmt","for_stmt","com_stmt","input_stmt","output_stmt"};
 char data_type[7][20] = { "integer", "double", "float","char","bool","void", " ERROR " };
 char exp_type[3][15] = { "expr","const","ID" };
 char Op[25][3] = { "+", "-", "*", "/", "%", "++", "--" ,"&" ,"|" , "^", "~", "<<", ">>", "==", ">", "<",  ">=", "<=", "!=", "&&" ,"||", "!" };
@@ -139,6 +139,7 @@ void ParseTree::print_node(TreeNode *node)
 			print_child(node->child[i]);
 	}
 
+	//cout << "lineno:"<<node->lineno;//行号计算有问题
 	cout << endl;
 }
 
@@ -158,6 +159,7 @@ void ParseTree::print_tree(TreeNode *node)
 	}
 }
 
+//尝试一次后序遍历实现检查和输出
 void ParseTree::check_idtype(TreeNode *node)
 {
 	TreeNode *temp;
@@ -193,6 +195,7 @@ void ParseTree::check_idtype(TreeNode *node)
 	}
 }
 
+//类型检查
 void ParseTree::check_node(TreeNode *node)
 {
 	switch (node->node_type)
@@ -287,10 +290,101 @@ void ParseTree::write_error(TreeNode *node, char error[])
 	fout.close();
 }
 
-//TreeNode * get_node(int address)
-//{
-//	TreeNode *node = new TreeNode;
-//	string id;
-//	id = tree.symbol_table[address];
-//	return node;
-//}
+//打开文件，输出汇编代码头部
+void ParseTree::gen_header()
+{
+	ofstream fout("code.txt", ios::app);
+	if (!fout)
+		return;
+	fout << ".586" << endl;
+	fout << "\t .model flat, stdcall" << endl;
+	fout << "\t option casemap :none" << endl;
+	fout << endl;
+	fout << "\t include \\masm32\\include\\windows.inc" << endl;
+	fout << "\t include \\masm32\\include\\user32.inc" << endl;
+	fout << "\t include \\masm32\\include\\kernel32.inc" << endl;
+	fout << "\t include \\masm32\\include\\masm32.inc" << endl;
+	fout << endl;
+	fout << "\t includelib \\masm32\\lib\\user32.lib" << endl;
+	fout << "\t includelib \\masm32\\lib\\kernel32.lib" << endl;
+	fout << "\t includelib \\masm32\\lib\\masm32.lib" << endl;
+	
+	fout.close();
+}
+
+//输出dec语句汇编代码
+void ParseTree::gen_dec(TreeNode *node)
+{
+	ofstream fout("code.txt", ios::app);
+	if (!fout)
+		return;
+	fout << endl << endl << "\t .data" << endl;
+
+	while(node->type.stmt_type == dec_stmt)
+	{
+		TreeNode *p = node->child[1];
+		while (p)
+		{
+			fout << "\t\t _" << symbol_table[p->address];
+			if (p->data_type == INT)
+				fout << " DWORD 0" << endl;
+			else if (p->data_type == CHAR)
+				fout << "BYTE 0" << endl;
+			p = p->brother;
+		}
+
+		for (int i = 0; i < temp_num; i++)
+			fout << "\t\t t" << i << " DWORD 0" << endl;
+
+		fout << "\t\t buffer BYTE 128 dup(0)" << endl;
+		fout << "\t\t LF BYTE 13, 10, 0" << endl;
+
+		node = node->brother;
+	}
+}
+
+//输出表达式汇编代码
+void ParseTree::gen_expcode(TreeNode *node)
+{
+	//Node *e1 = node->children[0];
+	//Node *e2 = node->children[1];
+	//switch (node->attr.op)
+	//{
+	//case PLUS:
+	//	out << "\tMOV eax, ";
+	//	if (e1->kind_kind == ID_EXPR)
+	//		out << "_" << symtbl.getname(e1->attr.symtbl_seq);
+	//	else if (e1->kind_kind == CONST_EXPR)
+	//		out << e1->attr.vali;
+	//	else out << "t" << e1->temp_var;
+	//	out << endl;
+	//	out << "\tADD eax, ";
+
+	//	if (e2->kind_kind == ID_EXPR)
+	//		out << "_" << symtbl.getname(e2->attr.symtbl_seq);
+	//	else if (e2->kind_kind == CONST_EXPR)
+	//		out << e2->attr.vali;
+	//	else out << "t" << e2->temp_var;
+	//	out << endl;
+	//	out << "\tMOV t" << node->temp_var << ", eax" << endl;
+	//	break;
+	//case LT:
+	//	out << "\tMOV eax, ";
+	//	if (e1->kind_kind == ID_EXPR)
+	//		out << "_" << symtbl.getname(e1->attr.symtbl_seq);
+	//	else if (e1->kind_kind == CONST_EXPR)
+	//		out << e1->attr.vali;
+	//	else out << "t" << e1->temp_var;
+	//	out << endl;
+	//	out << "\tCMP eax, ";
+	//	if (e2->kind_kind == ID_EXPR)
+	//		out << "_" << symtbl.getname(e2->attr.symtbl_seq);
+	//	else if (e2->kind_kind == CONST_EXPR)
+	//		out << e2->attr.vali;
+	//	else out << "t" << e2->temp_var;
+	//	out << endl;
+	//	out << "\tjl " << node->label.true_label << endl;
+	//	out << "\tjmp " << node->label.false_label << endl;
+	//	break;
+	//}
+}

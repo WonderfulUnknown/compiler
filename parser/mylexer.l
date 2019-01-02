@@ -75,10 +75,7 @@ bool    {return BOOL;}
 void    {return VOID;}
 
 //算术运算
-"+"     {		
-   // yylval = yylval->exp_node(oper);
-	//	yylval->attr.op = PLUS;
-      return PLUS;}
+"+"     {return PLUS;}
 "-"     {return MINUS;}
 "*"     {return MUL;}
 "/"     {return DIV;}
@@ -128,9 +125,9 @@ main    {return MAIN;}
 
 //其他 
 {id}        {
-            yylval->address = -1;
+            //yylval->address = -1;
 			   yylval->address = tree.search_table(yytext);
-            //yylval=new TreeNode;
+           
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;
             return ID;

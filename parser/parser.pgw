@@ -1,5 +1,5 @@
 [Application]
-WindowPlacement=2 2 -32000 -32000 -1 -1 379 117 1196 642
+WindowPlacement=2 3 -1 -1 -1 -1 379 117 1196 642
 [Editor1]
 FileName=.\mylexer.l
 ReadOnly=0

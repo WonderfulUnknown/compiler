@@ -12,9 +12,7 @@ Date:2018年11月15日
 
 using namespace std;
 
-//TreeNode *node = new TreeNode;
 TreeNode *node = node->stmt_node(com_stmt);
-//TreeNode *temp;
 extern ParseTree tree;
 %}
 
@@ -95,18 +93,12 @@ code
 		$$ = $1;
 		tree.root = $$;//只有一个语句时根结点
 	}
-	//|stmt code
 	|code stmt	
 	{
-		// $$ = node->stmt_node(com_stmt);
-		// $$->child[0] = $1;
-		// $$->child[1] = $2;
-
 		$$ = $2;
 		$$->brother = $1;
 		
 		node->child[0] = $$;
-		// tree.root = $$;
 		tree.root = node;
 	}
 	;
@@ -119,8 +111,8 @@ stmt
 	|if_stmt 				{$$ = $1;}
 	|while_stmt 			{$$ = $1;}
 	|for_stmt 				{$$ = $1;}
-	// |input_stmt SIMICOLON	{$$ = $1;}
-	// |output_stmt SIMICOLON	{$$ = $1;}
+	|input_stmt SIMICOLON	{$$ = $1;}
+	|output_stmt SIMICOLON	{$$ = $1;}
 	;
 
 //定义类型
@@ -297,7 +289,7 @@ id
 		$$ = node->exp_node(id);
 		strcpy($$->attr.name, $1->attr.name);
 		$$->data_type = INT;
-		//$$->address = $1->address;
+		$$->address = $1->address;
 	}
 	|id COMMA ID //id按顺序
 	{		
@@ -305,22 +297,12 @@ id
 		strcpy($$->attr.name , $3->attr.name);
 		$$->brother = $1;
 	}
-	//shift-reduce conflict on COMMA 移进规约冲突
-	// |ID COMMA id
-	// {
-	// 	$$ = node->exp_node(id);
-	// 	strcpy($$->attr.name , $1->attr.name);
-	// 	$$->brother = $3;
-	// }
-	//|asgn_stmt		{$$ =$1;}
-	// |asgn_stmt COMMA id
 	;
 
 //定义表达式
 exp 
 	:exp op exp	//按exp op exp 顺序创建结点	
 	{
-
 		$2->child[0] = $1;
 		$2->child[1] = $3;
 		$$ = $2;
@@ -355,57 +337,53 @@ asgn_stmt
 		$$->child[1] = $3;
 	}
 	;
+
 //定义声明语句
 dec_stmt
 	:type id 
 	{
 		$$ = node->stmt_node(dec_stmt);
+		$$->lineno = tree.all_line;
 		$$->child[0] = $1;
 		$$->child[1] = $2;
 	}
 	;
 
-//没考虑if,while,for后不加{}只有一行的情况
-//可能需要对能作为判断条件的语句再补充
-
 //定义if语句
 if_stmt
-	//考虑DFA->NFA
-	//没考虑else if的实现
 	:IF LPRACE exp RPRACE stmt
 	{
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 	}
+	|IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	{
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+		$$->child[2] = $10;
+	}
+	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
+	{
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+	}
+	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	{
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+		$$->child[2] = $10;
+	}
+	|IF LPRACE id RPRACE LBRACE stmt RBRACE
+	{
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = $6;
+	}
 	;
-	// :IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	// {
-	// 	$$ = node->stmt_node(if_stmt);
-	// 	$$->child[0] = $3;
-	// 	$$->child[1] = $6;
-	// 	$$->child[2] = $10;
-	// }
-	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE
-	// {
-	// 	$$ = node->stmt_node(if_stmt);
-	// 	$$->child[0] = $3;
-	// 	$$->child[1] = $6;
-	// }
-	// |IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	// {
-	// 	$$ = node->stmt_node(if_stmt);
-	// 	$$->child[0] = $3;
-	// 	$$->child[1] = $6;
-	// 	$$->child[2] = $10;
-	// }
-	// |IF LPRACE id RPRACE LBRACE stmt RBRACE
-	// {
-	// 	$$ = node->stmt_node(if_stmt);
-	// 	$$->child[0] = $3;
-	// 	$$->child[1] = $6;
-	// }
-	// ;
 
 //定义while语句
 while_stmt       
@@ -424,10 +402,7 @@ while_stmt
 	;
 	
 //定义for语句
-//可能需要考虑for语句的三个字句分别判断
 for_stmt 
-	//:FOR LPRACE for_1 SIMICOLON for_2 SIMICOLON for_3 RPRACE LBRACE stmt RBRACE
-	//:FOR LPRACE for_1 SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(for_stmt);
@@ -446,13 +421,6 @@ for_stmt
 	}
 	;
 
-// for_1
-// 	//可能为空
-// 	:
-// 	|asgn_stmt
-// 	|id
-// 	;
-
 //定义输入语句
 //input_stmt
 //定义输出语句
@@ -469,16 +437,15 @@ int main(void)
 	myparser parser;
 	if (parser.yycreate(&lexer)) {
 		if (lexer.yycreate(&parser)) {
+			tree.gen_header; //输出汇编代码头
 
 			ofstream fout("error.txt");	
 			fout.close();//清空error文件
 
 			freopen("input.txt", "r",stdin);
-
 			n = parser.yyparse();
-			//tree.print_tree(tree.root);不执行
-
 			freopen("CON", "r", stdin);
+
 			tree.check_idtype(tree.root);
 			tree.print_tree(tree.root);
 		}
