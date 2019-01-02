@@ -16,7 +16,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++tree.all_line;
+		cout << "Out of memory error at line" << tree.all_line;
 	else
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
@@ -27,7 +27,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 		node->type.stmt_type = type;
 		node->lineno = ++tree.all_line;
 		node->data_type = VOID;
-		//node->node_num = tree.all_node++;//在输出的时候赋值顺序正确
+		//node->node_num = tree.all_node++;//在输出的时候赋值
 	}
 
 	return node;
@@ -37,7 +37,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 {
 	TreeNode *node = new TreeNode;
 	if (!node)
-		cout << "Out of memory error at line" << ++tree.all_line;
+		cout << "Out of memory error at line" << tree.all_line;
 	else
 	{
 		for (int i = 0; i < MAXCHILDREN; i++)
@@ -333,7 +333,7 @@ void ParseTree::gen_dec(TreeNode *node)
 			p = p->brother;
 		}
 
-		for (int i = 0; i < temp_num; i++)
+		for (int i = 0; i < temp_sum; i++)
 			fout << "\t\t t" << i << " DWORD 0" << endl;
 
 		fout << "\t\t buffer BYTE 128 dup(0)" << endl;
@@ -346,45 +346,92 @@ void ParseTree::gen_dec(TreeNode *node)
 //输出表达式汇编代码
 void ParseTree::gen_expcode(TreeNode *node)
 {
-	//Node *e1 = node->children[0];
-	//Node *e2 = node->children[1];
-	//switch (node->attr.op)
-	//{
-	//case PLUS:
-	//	out << "\tMOV eax, ";
-	//	if (e1->kind_kind == ID_EXPR)
-	//		out << "_" << symtbl.getname(e1->attr.symtbl_seq);
-	//	else if (e1->kind_kind == CONST_EXPR)
-	//		out << e1->attr.vali;
-	//	else out << "t" << e1->temp_var;
-	//	out << endl;
-	//	out << "\tADD eax, ";
+	ofstream fout("code.txt", ios::app);
+	if (!fout)
+		return;
+	if (node->label.curr_label != "")
+		fout << node->label.curr_label << ":" << endl;
+	TreeNode *t1 = node->child[0];
+	TreeNode *t2 = node->child[1];
+	switch (node->attr.op)
+	{
+	case PLUS:
+		fout << "\tMOV eax, ";
+		if (t1->type.exp_type == id)
+			fout << "_" << symbol_table[t1->address];
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value;
+		else 
+			fout << "t" << t1->temp_num;
+		fout << endl;
+		fout << "\tADD eax, ";
 
-	//	if (e2->kind_kind == ID_EXPR)
-	//		out << "_" << symtbl.getname(e2->attr.symtbl_seq);
-	//	else if (e2->kind_kind == CONST_EXPR)
-	//		out << e2->attr.vali;
-	//	else out << "t" << e2->temp_var;
-	//	out << endl;
-	//	out << "\tMOV t" << node->temp_var << ", eax" << endl;
-	//	break;
-	//case LT:
-	//	out << "\tMOV eax, ";
-	//	if (e1->kind_kind == ID_EXPR)
-	//		out << "_" << symtbl.getname(e1->attr.symtbl_seq);
-	//	else if (e1->kind_kind == CONST_EXPR)
-	//		out << e1->attr.vali;
-	//	else out << "t" << e1->temp_var;
-	//	out << endl;
-	//	out << "\tCMP eax, ";
-	//	if (e2->kind_kind == ID_EXPR)
-	//		out << "_" << symtbl.getname(e2->attr.symtbl_seq);
-	//	else if (e2->kind_kind == CONST_EXPR)
-	//		out << e2->attr.vali;
-	//	else out << "t" << e2->temp_var;
-	//	out << endl;
-	//	out << "\tjl " << node->label.true_label << endl;
-	//	out << "\tjmp " << node->label.false_label << endl;
-	//	break;
-	//}
+		if (t2->type.exp_type == id)
+			fout << "_" << symbol_table[t2->address];
+		else if (t2->type.exp_type == number)
+			fout << t2->attr.value;
+		else fout << "t" << t2->temp_num;
+		fout << endl;
+		fout << "\tMOV t" << node->temp_num << ", eax" << endl;
+		break;
+	case LT://小于
+		fout << "\tMOV eax, ";
+		if (t1->type.exp_type == id)
+			fout << "_" << symbol_table[t1->address];
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value;
+		else fout << "t" << t1->temp_num;
+		fout << endl;
+		fout << "\tCMP eax, ";
+		if (t2->type.exp_type == id)
+			fout << "_" << symbol_table[t2->address];
+		else if (t2->type.exp_type == number)
+			fout << t2->attr.value;
+		else fout << "t" << t2->temp_num;
+		fout << endl;
+		fout << "\tjl " << node->label.true_label << endl;
+		fout << "\tjmp " << node->label.false_label << endl;
+		break;
+	}
+}
+
+//输出语句汇编代码
+void ParseTree::gen_stmtcode(TreeNode *node)
+{
+	ofstream fout("code.txt", ios::app);
+	if (!fout)
+		return;
+	if (node->label.curr_label != "")
+		fout << node->label.curr_label << ":" << endl;
+	if (node->type.stmt_type == com_stmt)//复合语句
+	{
+		TreeNode *temp;
+		for (int i = 0; node->child[i]; i++)
+		{
+			gen_code(node->child[i]);
+			while (node->child[i])
+			{
+				temp = node->child[i]->brother;
+				gen_code(temp);
+				temp = temp->brother;
+			}
+		}
+	}
+
+	else if (node->type.stmt_type == while_stmt)
+	{
+		if (node->label.begin_label != "")
+			fout << node->label.begin_label << ":" << endl;
+		gen_code(node->child[0]);
+		gen_code(node->child[1]);
+		fout << "\tjmp " << node->label.begin_label << endl;
+	}
+}
+
+void ParseTree::gen_code(TreeNode *node)
+{
+	if (node->node_type == stmt)
+		gen_stmtcode(node);
+	else if (node->node_type == exps)// && (node->attr.op == OP_EXPR || t->kind_kind == NOT_EXPR))
+		gen_expcode(node);
 }

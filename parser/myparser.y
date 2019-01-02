@@ -7,6 +7,7 @@ Date:2018年11月15日
 ****************************************************************************/
 #include <iostream>
 #include <fstream>
+// #include <string>
 #include "mylexer.h"
 #include "Tree.h"
 
@@ -343,7 +344,7 @@ dec_stmt
 	:type id 
 	{
 		$$ = node->stmt_node(dec_stmt);
-		$$->lineno = tree.all_line;
+		// $$->lineno = tree.all_line;
 		$$->child[0] = $1;
 		$$->child[1] = $2;
 	}
@@ -356,33 +357,22 @@ if_stmt
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
+		sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->true_label = $5->label.curr_label;
 	}
-	|IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-		$$->child[2] = $10;
-	}
-	|IF LPRACE exp RPRACE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-	}
-	|IF LPRACE id RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-		$$->child[2] = $10;
-	}
-	|IF LPRACE id RPRACE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(if_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-	}
+	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// 	$$->child[2] = $10;
+	// }
+	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE
+	// {
+	// 	$$ = node->stmt_node(if_stmt);
+	// 	$$->child[0] = $3;
+	// 	$$->child[1] = $6;
+	// }
 	;
 
 //定义while语句
@@ -391,13 +381,17 @@ while_stmt
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
-		$$->child[1] = $6;		
+		$$->child[1] = $6;
+		sprintf_s($6->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->true_label = $6->label.curr_label;
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
-		$$->child[1] = $6;		
+		$$->child[1] = $6;
+		sprintf_s($6->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->true_label = $6->label.curr_label;
 	}
 	;
 	
@@ -410,6 +404,8 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
+		sprintf_s($10->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->true_label = $10->label.curr_label;
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
@@ -417,7 +413,9 @@ for_stmt
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
-		$$->child[3]= $10;	
+		$$->child[3]= $10;
+		sprintf_s($10->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->true_label = $10->label.curr_label;
 	}
 	;
 

@@ -33,7 +33,7 @@ struct TreeNode
 	int lineno;//结点在代码中的行号
 	int node_num;//结点相对于整棵树的编号
 	int data_type;//记录类型
-
+	int temp_num;//临时变量的编号
 	int address;//标识符在符号表中的位置
 
 	NodeType node_type;
@@ -51,6 +51,14 @@ struct TreeNode
 		char name[50];
 	} attr;
 
+	union JmpAddress
+	{
+		char true_label[10];
+		char false_label[10];
+		char begin_label[10];
+		char curr_label[10];//用于控制流语句跳转时填入
+	}label;
+
 	TreeNode* stmt_node(StmtType type);
 	TreeNode* exp_node(ExpType type);
 };
@@ -64,7 +72,8 @@ struct ParseTree
 	int table_number = 0; //记录符号表中储存的个数
 	int all_line = 0;//记录代码的行数
 	int all_node = 0;//记录树中结点数量
-	int temp_num = 0;//记录临时变量数量
+	int temp_sum = 0;//记录临时变量数量
+	int label_sum = 0;//记录标签数量
 
 	TreeNode * root;//代码的根结点
 
@@ -81,4 +90,5 @@ struct ParseTree
 	void gen_dec(TreeNode *node);
 	void gen_stmtcode(TreeNode *node);
 	void gen_expcode(TreeNode *node);
+	void gen_code(TreeNode *node);
 };

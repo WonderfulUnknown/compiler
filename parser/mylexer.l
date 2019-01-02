@@ -61,7 +61,7 @@ annotation  ("/*"([^*"]*|".*"|\*+[^/])*\**"*/")|("//".*\n)
 // place your Lex rules here
 
 {delims}		   {}
-{newline}      {tree.all_line++;}
+{newline}      {}//{tree.all_line++;}//正确计数需要移到.y文件中
 {annotation}	{}
 
 //myparser.h 中自动给出相应的宏定义
