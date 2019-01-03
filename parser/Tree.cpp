@@ -162,42 +162,6 @@ void ParseTree::print_tree(TreeNode *node)
 	}
 }
 
-//尝试一次后序遍历实现检查和输出
-void ParseTree::check_idtype(TreeNode *node)
-{
-	TreeNode *temp;
-	int addr;
-	if (node != NULL)
-	{
-		if (node->type.stmt_type == dec_stmt)
-		{
-			temp = node->child[1];
-			while (temp)
-			{
-				temp->data_type = node->child[0]->data_type;
-
-				addr = search_table(temp->attr.name);
-				id_type[addr] = temp->data_type;
-
-				temp = temp->brother;
-			}
-		}
-		//id的类型值从id_type中获取
-		if (node->type.exp_type == id)
-		{
-			addr = search_table(node->attr.name);
-			node->data_type = id_type[addr];
-		}
-		if (node->brother)
-			check_idtype(node->brother);
-		for (int i = 0; i < MAXCHILDREN; i++)
-		{
-			if (node->child[i])
-				check_idtype(node->child[i]);
-		}
-	}
-}
-
 //类型检查
 void ParseTree::check_node(TreeNode *node)
 {

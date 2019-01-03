@@ -291,7 +291,7 @@ id
 		strcpy($$->attr.name, $1->attr.name);
 		$$->address = tree.search_table($$->attr.name);
 		$$->data_type = INT;
-		//$$->address = $1->address;
+		$$->data_type = tree.id_type[$$->address];
 	}
 	|id COMMA ID //id°´Ë³Ðò
 	{		
@@ -346,9 +346,17 @@ dec_stmt
 	:type id 
 	{
 		$$ = node->stmt_node(dec_stmt);
-		// $$->lineno = tree.all_line;
 		$$->child[0] = $1;
 		$$->child[1] = $2;
+		$2->data_type = $1->data_type;
+		TreeNode *temp;
+		temp = $2;
+		while(temp)
+		{
+			temp->data_type = $1->data_type;
+			tree.id_type[temp->address] = $1->data_type;
+			temp = temp->brother;
+		}
 	}
 	;
 
@@ -458,8 +466,7 @@ int main(void)
 			freopen("input.txt", "r",stdin);
 			n = parser.yyparse();
 			freopen("CON", "r", stdin);
-
-			tree.check_idtype(tree.root);
+			
 			tree.gen_dec(tree.root);
 			tree.print_tree(tree.root);
 		}
