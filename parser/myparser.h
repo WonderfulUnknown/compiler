@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 104 of your 30 day trial period.
+* You are on day 105 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -19,7 +19,7 @@
 * C++ header file generated from myparser.y.
 * 
 * Date: 01/03/19
-* Time: 10:29:20
+* Time: 17:34:50
 * 
 * AYACC Version: 2.07
 ****************************************************************************/
@@ -116,17 +116,18 @@ public:
 #define CIN 291
 #define COUT 292
 #define MAIN 293
-#define ASSIGN 294
-#define LBRACE 295
-#define RBRACE 296
-#define LPRACE 297
-#define RPRACE 298
-#define LSBRACE 299
-#define RSBRACE 300
-#define COMMA 301
-#define SIMICOLON 302
-#define COLON 303
-#define ID 304
-#define NUMBER 305
-#define UNKNOWN 306
+#define ENDL 294
+#define ASSIGN 295
+#define LBRACE 296
+#define RBRACE 297
+#define LPRACE 298
+#define RPRACE 299
+#define LSBRACE 300
+#define RSBRACE 301
+#define COMMA 302
+#define SIMICOLON 303
+#define COLON 304
+#define ID 305
+#define NUMBER 306
+#define UNKNOWN 307
 #endif

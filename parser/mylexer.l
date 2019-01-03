@@ -109,11 +109,12 @@ while   {return WHILE;}
 for     {return FOR;}
 break   {return BREAK;}
 return  {return RETURN;}
-cin     {return CIN;}
-cout    {return COUT;}
+"cin"     {return CIN;}
+"cout"    {return COUT;}
 
 //ÆäËû·ûºÅ
 main    {return MAIN;}
+endl    {return ENDL;}
 "="     {return ASSIGN;}
 "{"     {return LBRACE;}
 "}"     {return RBRACE;}

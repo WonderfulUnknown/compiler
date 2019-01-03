@@ -7,9 +7,9 @@ Date:2018年11月15日
 ****************************************************************************/
 #include <iostream>
 #include <fstream>
-// #include <string>
 #include "mylexer.h"
 #include "Tree.h"
+// #include<stdio.h>
 
 using namespace std;
 
@@ -52,7 +52,7 @@ extern ParseTree tree;
 %token EQ GT LT GE LE NEQ
 %token AND OR OPPOSITE
 %token IF ELSE WHILE FOR BREAK RETURN CIN COUT
-%token MAIN ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON
+%token MAIN ENDL ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON 
 %token ID NUMBER UNKNOWN
 
 %left COMMA
@@ -92,15 +92,14 @@ code
 	:stmt 
 	{
 		$$ = $1;
-		tree.root = $$;//只有一个语句时根结点
+		tree.root = $$;
 	}
 	|code stmt	
 	{
 		$$ = $2;
 		$$->brother = $1;
-		
 		node->child[0] = $$;
-		tree.root = node;
+		tree.root=node;
 	}
 	;
 
@@ -367,8 +366,8 @@ if_stmt
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
-		sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->label.true_label = $5->label.curr_label;
+	//	sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+	//	$$->label.true_label = $5->label.curr_label;
 	}
 	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	// {
@@ -387,21 +386,13 @@ if_stmt
 
 //定义while语句
 while_stmt       
-	:WHILE LPRACE exp RPRACE LBRACE stmt RBRACE
+	:WHILE LPRACE exp RPRACE LBRACE code RBRACE
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
-		sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->label.true_label = $6->label.curr_label;
-	}
-	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
-	{
-		$$ = node->stmt_node(while_stmt);
-		$$->child[0] = $3;
-		$$->child[1] = $6;
-		sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->label.true_label = $6->label.curr_label;
+	//	sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);
+	//	$$->label.true_label = $6->label.curr_label;
 	}
 	;
 	
@@ -414,8 +405,8 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
-		sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->label.true_label = $10->label.curr_label;
+	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
+	//	$$->label.true_label = $10->label.curr_label;
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
@@ -424,25 +415,38 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
-		sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->label.true_label = $10->label.curr_label;
+	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
+	//	$$->label.true_label = $10->label.curr_label;
 	}
 	;
 
 //定义输入语句
 input_stmt
-	:CIN GT GT id
+	:CIN SHR id
 	{
 		$$ = node->stmt_node(input_stmt);
-		$$->child[0] = $4;
+		$$->child[0] = $3;
+	}
+	|CIN SHR id SHR ENDL
+	{
+		$$ = node->stmt_node(input_stmt);
+		$$->child[0] = $3;
+		$$->attr.op = ENDL;
 	}
 	;
+
 //定义输出语句
 output_stmt
-	:COUT LT LT id
+	:COUT SHL id
 	{
-		$$ = node->stmt_node(input_stmt);
-		$$->child[0] = $4;
+		$$ = node->stmt_node(output_stmt);
+		$$->child[0] = $3;
+	}
+	|COUT SHL id SHL ENDL
+	{
+		$$ = node->stmt_node(output_stmt);
+		$$->child[0] = $3;
+		$$->attr.op = ENDL;
 	}
 	;
 %%
@@ -471,7 +475,6 @@ int main(void)
 			tree.print_tree(tree.root);
 		}
 	}
-
 	system("pause");
 	return n;
 }

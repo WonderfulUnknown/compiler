@@ -275,9 +275,8 @@ void ParseTree::gen_header()
 	fout << "\t includelib \\masm32\\lib\\user32.lib" << endl;
 	fout << "\t includelib \\masm32\\lib\\kernel32.lib" << endl;
 	fout << "\t includelib \\masm32\\lib\\masm32.lib" << endl;
-	fout << endl;
 
-	fout << endl << endl << "\t .data" << endl;
+	fout << endl << "\t .data" << endl;
 	fout.close();
 }
 
@@ -312,6 +311,9 @@ void ParseTree::gen_dec(TreeNode *node)
 		fout << "\t\t t" << i << " DWORD 0" << endl;
 	fout << "\t\t buffer BYTE 128 dup(0)" << endl;
 	fout << "\t\t LF BYTE 13, 10, 0" << endl;
+	fout << endl;
+	fout << "\t.code" << endl;
+	fout << "start:" << endl;
 	fout.close();
 }
 
@@ -336,8 +338,8 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else
 			fout << "t" << t1->temp_num;
 		fout << endl;
-		fout << "\tADD eax, ";
 
+		fout << "\tADD eax, ";
 		if (t2->type.exp_type == id)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
@@ -364,6 +366,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		fout << "\tjl " << node->label.true_label << endl;
 		fout << "\tjmp " << node->label.false_label << endl;
 		break;
+	//case 
 	}
 	fout.close();
 }
@@ -378,28 +381,55 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 	//检查当前结点是否会是跳转的位置
 	if (node->label.curr_label != "")
 		fout << node->label.curr_label << ":" << endl;
-	if (node->type.stmt_type == com_stmt)//复合语句
+	TreeNode *temp;
+	switch (node->type.stmt_type)
 	{
-		TreeNode *temp;
-		for (int i = 0; node->child[i]; i++)
+	case com_stmt:
+		temp = node->child[0];
+		while (temp)
 		{
-			gen_code(node->child[i]);
-			while (node->child[i])
-			{
-				temp = node->child[i]->brother;
-				gen_code(temp);
-				temp = temp->brother;
-			}
+			gen_code(temp);
+			temp = temp->brother;
 		}
-	}
-
-	else if (node->type.stmt_type == while_stmt)
-	{
-		if (node->label.begin_label != "")
-			fout << node->label.begin_label << ":" << endl;
+		break;
+	case while_stmt:
 		gen_code(node->child[0]);
 		gen_code(node->child[1]);
 		fout << "\tjmp " << node->label.begin_label << endl;
+		break;
+	case asgn_stmt:
+		temp = node->child[1];
+		fout << "\tMOV eax, ";
+		if (temp->type.exp_type == id)
+			fout << "_" << symbol_table[temp->address];
+		else if (temp->type.exp_type == number)
+			fout << temp->attr.value;
+		else
+			fout << "t" << temp->temp_num;
+		fout << endl;
+		fout << "\tMOV t" << node->child[0]->temp_num << ", eax" << endl;
+		fout << endl;
+		break;
+	case input_stmt:
+		if (node->child[0]->data_type == INT)
+			fout << "\tinvoke crt_scanf ,addr szd,addr _";
+		else if (node->child[0]->data_type == CHAR)
+			fout << "\tinvoke crt_scanf ,addr szc,addr _";
+		fout << node->child[0]->attr.name << endl;
+		break;
+	case output_stmt:
+		fout << "\tMOV eax,";
+		if (node->child[0]->type.exp_type == id)
+			fout << "_" << node->child[0]->attr.name << endl;
+		else if (node->child[0]->type.exp_type == number)
+			fout << node->child[0]->attr.value << endl;
+		if (node->child[0]->data_type == INT)
+			fout << "\tinvoke crt_printf ,addr szd,eax" << endl;
+		if (node->child[0]->data_type == CHAR)
+			fout << "\tinvoke crt_printf ,addr szc,eax" << endl;
+		break;
+	default:
+		break;
 	}
 	fout.close();
 }
@@ -408,6 +438,6 @@ void ParseTree::gen_code(TreeNode *node)
 {
 	if (node->node_type == stmt)
 		gen_stmtcode(node);
-	else if (node->node_type == exps)// && (node->attr.op == OP_EXPR || t->kind_kind == NOT_EXPR))
+	else if (node->node_type == exps)// && (node->attr.op == OP_EXPR || node->kind_kind == NOT_EXPR))
 		gen_expcode(node);
 }

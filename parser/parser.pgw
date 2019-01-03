@@ -15,11 +15,11 @@ ReadOnly=0
 WindowPlacement1=0 1 -1 -1 -1 -1 0 0 454 632
 WindowOrder1=3
 Position001=0 410
-Cursor001=14 430 14 430
+Cursor001=2 430 2 430
 SyntaxColouring=2
 TargetSyntaxColouring=3
 [Output]
 WindowPlacement1=0 1 -1 -1 -1 -1 454 0 908 632
 WindowOrder1=1
-Position1=54 1
-Cursor1=53 10 53 10
+Position1=0 1
+Cursor1=0 40 0 40
