@@ -1,7 +1,7 @@
 /****************************************************************************
 *                     U N R E G I S T E R E D   C O P Y
 * 
-* You are on day 83 of your 30 day trial period.
+* You are on day 104 of your 30 day trial period.
 * 
 * This file was produced by an UNREGISTERED COPY of Parser Generator. It is
 * for evaluation purposes only. If you continue to use Parser Generator 30
@@ -18,8 +18,8 @@
 * myparser.h
 * C++ header file generated from myparser.y.
 * 
-* Date: 12/12/18
-* Time: 20:30:19
+* Date: 01/03/19
+* Time: 09:50:37
 * 
 * AYACC Version: 2.07
 ****************************************************************************/
@@ -61,7 +61,7 @@ protected:
 	virtual void yycopyattribute(void YYFAR* dest, const void YYFAR* src, int count);
 
 public:
-#line 26 ".\\myparser.y"
+#line 27 ".\\myparser.y"
 
 	// place any extra class members here
 
@@ -72,7 +72,7 @@ public:
 #define YYPARSERNAME myparser
 #endif
 
-#line 41 ".\\myparser.y"
+#line 42 ".\\myparser.y"
 
 #ifndef YYSTYPE
 #define YYSTYPE TreeNode*	//所有的$都是TreeNode*类型
@@ -113,18 +113,20 @@ public:
 #define FOR 288
 #define BREAK 289
 #define RETURN 290
-#define MAIN 291
-#define ASSIGN 292
-#define LBRACE 293
-#define RBRACE 294
-#define LPRACE 295
-#define RPRACE 296
-#define LSBRACE 297
-#define RSBRACE 298
-#define COMMA 299
-#define SIMICOLON 300
-#define COLON 301
-#define ID 302
-#define NUMBER 303
-#define UNKNOWN 304
+#define CIN 291
+#define COUT 292
+#define MAIN 293
+#define ASSIGN 294
+#define LBRACE 295
+#define RBRACE 296
+#define LPRACE 297
+#define RPRACE 298
+#define LSBRACE 299
+#define RSBRACE 300
+#define COMMA 301
+#define SIMICOLON 302
+#define COLON 303
+#define ID 304
+#define NUMBER 305
+#define UNKNOWN 306
 #endif

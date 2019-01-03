@@ -7,7 +7,7 @@ using namespace std;
 
 ParseTree tree;
 
-char stmt_type[9][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt","while_stmt","for_stmt","com_stmt","input_stmt","output_stmt"};
+char stmt_type[9][15] = { "type_spe","asgn_stmt","dec_stmt","if_stmt","while_stmt","for_stmt","com_stmt","input_stmt","output_stmt" };
 char data_type[7][20] = { "integer", "double", "float","char","bool","void", " ERROR " };
 char exp_type[3][15] = { "expr","const","ID" };
 char Op[25][3] = { "+", "-", "*", "/", "%", "++", "--" ,"&" ,"|" , "^", "~", "<<", ">>", "==", ">", "<",  ">=", "<=", "!=", "&&" ,"||", "!" };
@@ -25,8 +25,9 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 
 		node->node_type = stmt;
 		node->type.stmt_type = type;
-		node->lineno = ++tree.all_line;
+		//node->lineno = ++tree.all_line;
 		node->data_type = VOID;
+		node->label.curr_label = "";
 		//node->node_num = tree.all_node++;//在输出的时候赋值
 	}
 
@@ -46,7 +47,8 @@ TreeNode * TreeNode::exp_node(ExpType type)
 
 		node->node_type = exps;
 		node->type.exp_type = type;
-		node->lineno = ++tree.all_line;
+		//node->lineno = ++tree.all_line;
+		node->label.curr_label = "";
 		//node->node_num = tree.all_node++;
 	}
 
@@ -143,7 +145,7 @@ void ParseTree::print_node(TreeNode *node)
 	cout << endl;
 }
 
-//后序遍历输出整棵树
+//后序遍历
 void ParseTree::print_tree(TreeNode *node)
 {
 	if (node != NULL)
@@ -156,6 +158,7 @@ void ParseTree::print_tree(TreeNode *node)
 				print_tree(node->child[i]);
 		}
 		print_node(node);
+		gen_code(node);
 	}
 }
 
@@ -172,7 +175,7 @@ void ParseTree::check_idtype(TreeNode *node)
 			while (temp)
 			{
 				temp->data_type = node->child[0]->data_type;
-				
+
 				addr = search_table(temp->attr.name);
 				id_type[addr] = temp->data_type;
 
@@ -215,9 +218,9 @@ void ParseTree::check_node(TreeNode *node)
 				node->data_type = INT;
 			break;
 		case number:
-		//case id:
+			//case id:
 			node->data_type = INT;
-			break; 
+			break;
 		default:
 			break;
 		}
@@ -308,7 +311,9 @@ void ParseTree::gen_header()
 	fout << "\t includelib \\masm32\\lib\\user32.lib" << endl;
 	fout << "\t includelib \\masm32\\lib\\kernel32.lib" << endl;
 	fout << "\t includelib \\masm32\\lib\\masm32.lib" << endl;
-	
+	fout << endl;
+
+	fout << endl << endl << "\t .data" << endl;
 	fout.close();
 }
 
@@ -318,29 +323,32 @@ void ParseTree::gen_dec(TreeNode *node)
 	ofstream fout("code.txt", ios::app);
 	if (!fout)
 		return;
-	fout << endl << endl << "\t .data" << endl;
-
-	while(node->type.stmt_type == dec_stmt)
+	TreeNode *p;
+	node = node->child[0];
+	while (1)
 	{
-		TreeNode *p = node->child[1];
-		while (p)
+		if (node->type.stmt_type == dec_stmt)
 		{
-			fout << "\t\t _" << symbol_table[p->address];
-			if (p->data_type == INT)
-				fout << " DWORD 0" << endl;
-			else if (p->data_type == CHAR)
-				fout << "BYTE 0" << endl;
-			p = p->brother;
+			p = node->child[1];
+			while (p)
+			{
+				fout << "\t\t _" << symbol_table[p->address];
+				if (p->data_type == INT)
+					fout << " DWORD 0" << endl;
+				else if (p->data_type == CHAR)
+					fout << " BYTE 0" << endl;
+				p = p->brother;
+			}
 		}
-
-		for (int i = 0; i < temp_sum; i++)
-			fout << "\t\t t" << i << " DWORD 0" << endl;
-
-		fout << "\t\t buffer BYTE 128 dup(0)" << endl;
-		fout << "\t\t LF BYTE 13, 10, 0" << endl;
-
 		node = node->brother;
+		if (!node)
+			break;
 	}
+	for (int i = 0; i < temp_sum; i++)
+		fout << "\t\t t" << i << " DWORD 0" << endl;
+	fout << "\t\t buffer BYTE 128 dup(0)" << endl;
+	fout << "\t\t LF BYTE 13, 10, 0" << endl;
+	fout.close();
 }
 
 //输出表达式汇编代码
@@ -361,7 +369,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "_" << symbol_table[t1->address];
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
-		else 
+		else
 			fout << "t" << t1->temp_num;
 		fout << endl;
 		fout << "\tADD eax, ";
@@ -393,6 +401,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		fout << "\tjmp " << node->label.false_label << endl;
 		break;
 	}
+	fout.close();
 }
 
 //输出语句汇编代码
@@ -401,6 +410,8 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 	ofstream fout("code.txt", ios::app);
 	if (!fout)
 		return;
+
+	//检查当前结点是否会是跳转的位置
 	if (node->label.curr_label != "")
 		fout << node->label.curr_label << ":" << endl;
 	if (node->type.stmt_type == com_stmt)//复合语句
@@ -426,6 +437,7 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		gen_code(node->child[1]);
 		fout << "\tjmp " << node->label.begin_label << endl;
 	}
+	fout.close();
 }
 
 void ParseTree::gen_code(TreeNode *node)

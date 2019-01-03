@@ -51,7 +51,7 @@ extern ParseTree tree;
 %token PLUS MINUS MUL DIV MOD INC DEC INAD IOR XOR NOT SHL SHR 
 %token EQ GT LT GE LE NEQ
 %token AND OR OPPOSITE
-%token IF ELSE WHILE FOR BREAK RETURN
+%token IF ELSE WHILE FOR BREAK RETURN CIN COUT
 %token MAIN ASSIGN LBRACE RBRACE LPRACE RPRACE LSBRACE RSBRACE COMMA SIMICOLON COLON
 %token ID NUMBER UNKNOWN
 
@@ -289,13 +289,15 @@ id
 	{
 		$$ = node->exp_node(id);
 		strcpy($$->attr.name, $1->attr.name);
+		$$->address = tree.search_table($$->attr.name);
 		$$->data_type = INT;
-		$$->address = $1->address;
+		//$$->address = $1->address;
 	}
 	|id COMMA ID //id按顺序
 	{		
 		$$ = node->exp_node(id);
 		strcpy($$->attr.name , $3->attr.name);
+		$$->address = tree.search_table($$->attr.name);
 		$$->brother = $1;
 	}
 	;
@@ -358,7 +360,7 @@ if_stmt
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->true_label = $5->label.curr_label;
+		$$->label.true_label = $5->label.curr_label;
 	}
 	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	// {
@@ -382,16 +384,16 @@ while_stmt
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
-		sprintf_s($6->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->true_label = $6->label.curr_label;
+		sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->label.true_label = $6->label.curr_label;
 	}
 	|WHILE LPRACE id RPRACE LBRACE stmt RBRACE
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $6;
-		sprintf_s($6->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->true_label = $6->label.curr_label;
+		sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->label.true_label = $6->label.curr_label;
 	}
 	;
 	
@@ -404,8 +406,8 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
-		sprintf_s($10->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->true_label = $10->label.curr_label;
+		sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->label.true_label = $10->label.curr_label;
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
 	{
@@ -414,15 +416,27 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
-		sprintf_s($10->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$$->true_label = $10->label.curr_label;
+		sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);//拼接函数
+		$$->label.true_label = $10->label.curr_label;
 	}
 	;
 
 //定义输入语句
-//input_stmt
+input_stmt
+	:CIN GT GT id
+	{
+		$$ = node->stmt_node(input_stmt);
+		$$->child[0] = $4;
+	}
+	;
 //定义输出语句
-//output_stmt
+output_stmt
+	:COUT LT LT id
+	{
+		$$ = node->stmt_node(input_stmt);
+		$$->child[0] = $4;
+	}
+	;
 %%
 
 /////////////////////////////////////////////////////////////////////////////
@@ -435,16 +449,18 @@ int main(void)
 	myparser parser;
 	if (parser.yycreate(&lexer)) {
 		if (lexer.yycreate(&parser)) {
-			tree.gen_header; //输出汇编代码头
+			ofstream fout1("error.txt");	
+			fout1.close();//清空error文件
+			ofstream fout2("code.txt");	
+			fout2.close();//清空code文件
 
-			ofstream fout("error.txt");	
-			fout.close();//清空error文件
-
+			tree.gen_header(); //输出汇编代码头
 			freopen("input.txt", "r",stdin);
 			n = parser.yyparse();
 			freopen("CON", "r", stdin);
 
 			tree.check_idtype(tree.root);
+			tree.gen_dec(tree.root);
 			tree.print_tree(tree.root);
 		}
 	}

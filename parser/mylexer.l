@@ -109,6 +109,8 @@ while   {return WHILE;}
 for     {return FOR;}
 break   {return BREAK;}
 return  {return RETURN;}
+cin     {return CIN;}
+cout    {return COUT;}
 
 //其他符号
 main    {return MAIN;}
@@ -126,7 +128,7 @@ main    {return MAIN;}
 //其他 
 {id}        {
             //yylval->address = -1;
-			   yylval->address = tree.search_table(yytext);
+			   //yylval->address = tree.search_table(yytext);
            
             strcpy(yylval->attr.name,yytext);
             yylval->type.exp_type = id;

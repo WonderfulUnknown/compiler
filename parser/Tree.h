@@ -53,10 +53,11 @@ struct TreeNode
 
 	union JmpAddress
 	{
-		char true_label[10];
-		char false_label[10];
-		char begin_label[10];
-		char curr_label[10];//用于控制流语句跳转时填入
+		//用于控制流语句跳转时填入
+		char *true_label;
+		char *false_label;
+		char *begin_label;
+		char *curr_label;
 	}label;
 
 	TreeNode* stmt_node(StmtType type);
