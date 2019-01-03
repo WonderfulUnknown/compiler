@@ -19,7 +19,7 @@
 # YACC verbose file generated from myparser.y.
 # 
 # Date: 01/03/19
-# Time: 17:34:50
+# Time: 21:50:36
 # 
 # AYACC Version: 2.07
 #############################################################################
@@ -39,7 +39,7 @@
     6          | INT MAIN LPRACE VOID RPRACE LBRACE code RBRACE
 
     7  code : stmt
-    8       | code stmt
+    8       | stmt code
 
     9  stmt : exp SIMICOLON
    10       | asgn_stmt SIMICOLON
@@ -88,7 +88,7 @@
    48         | OPPOSITE
 
    49  id : ID
-   50     | id COMMA ID
+   50     | ID COMMA id
 
    51  exp : exp op exp
    52      | LPRACE exp RPRACE
@@ -105,8 +105,8 @@
 
    60  while_stmt : WHILE LPRACE exp RPRACE LBRACE code RBRACE
 
-   61  for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
-   62           | FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+   61  for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
+   62           | FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
    63  input_stmt : CIN SHR id
    64             | CIN SHR id SHR ENDL
@@ -254,18 +254,18 @@ state 17
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	code  goto 42
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
+	code  goto 40
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 18
@@ -292,18 +292,18 @@ state 19
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 50
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 20
@@ -330,18 +330,18 @@ state 21
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 52
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 22
@@ -362,18 +362,18 @@ state 22
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 53
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 23
@@ -425,8 +425,8 @@ state 30
 
 
 state 31
-	for_stmt : FOR . LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
-	for_stmt : FOR . LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR . LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
+	for_stmt : FOR . LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
 	LPRACE  shift 56
 
@@ -456,9 +456,12 @@ state 34
 	id  goto 60
 
 
+35: shift-reduce conflict (shift 61, reduce 49) on COMMA
 state 35
+	id : ID . COMMA id
 	id : ID .  (49)
 
+	COMMA  shift 61
 	.  reduce 49
 
 
@@ -469,69 +472,69 @@ state 36
 
 
 state 37
-	code : stmt .  (7)
+	stmt : dec_stmt . SIMICOLON
 
-	.  reduce 7
+	SIMICOLON  shift 62
 
 
 state 38
-	stmt : exp . SIMICOLON
-	exp : exp . op exp
-
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
-	SIMICOLON  shift 84
-
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
-
-
-state 39
-	stmt : asgn_stmt . SIMICOLON
-	asgn_stmt : asgn_stmt . COMMA id
-
-	COMMA  shift 89
-	SIMICOLON  shift 90
-
-
-state 40
-	stmt : dec_stmt . SIMICOLON
-
-	SIMICOLON  shift 91
-
-
-state 41
 	stmt : if_stmt .  (12)
 
 	.  reduce 12
 
 
-state 42
+state 39
+	stmt : exp . SIMICOLON
+	exp : exp . op exp
+
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
+	SIMICOLON  shift 86
+
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
+
+
+state 40
 	program : MAIN LPRACE RPRACE LBRACE code . RBRACE
-	code : code . stmt
+
+	RBRACE  shift 91
+
+
+state 41
+	stmt : asgn_stmt . SIMICOLON
+	asgn_stmt : asgn_stmt . COMMA id
+
+	COMMA  shift 92
+	SIMICOLON  shift 93
+
+
+state 42
+	code : stmt .  (7)
+	code : stmt . code
 
 	INT  shift 23
 	DOUBLE  shift 24
@@ -544,67 +547,65 @@ state 42
 	FOR  shift 31
 	CIN  shift 32
 	COUT  shift 33
-	RBRACE  shift 92
 	LPRACE  shift 34
 	ID  shift 35
 	NUMBER  shift 36
+	.  reduce 7
 
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
+	code  goto 94
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 43
 	stmt : input_stmt . SIMICOLON
 
-	SIMICOLON  shift 94
+	SIMICOLON  shift 95
 
 
 state 44
+	stmt : output_stmt . SIMICOLON
+
+	SIMICOLON  shift 96
+
+
+state 45
+	dec_stmt : type . id
+
+	ID  shift 35
+
+	id  goto 97
+
+
+46: shift-reduce conflict (shift 98, reduce 54) on ASSIGN
+state 46
+	asgn_stmt : id . ASSIGN exp
+	asgn_stmt : id . ASSIGN asgn_stmt
+	exp : id .  (54)
+
+	ASSIGN  shift 98
+	.  reduce 54
+
+
+state 47
 	stmt : while_stmt .  (13)
 
 	.  reduce 13
 
 
-state 45
+state 48
 	stmt : for_stmt .  (14)
 
 	.  reduce 14
-
-
-46: shift-reduce conflict (shift 95, reduce 54) on ASSIGN
-46: shift-reduce conflict (shift 96, reduce 54) on COMMA
-state 46
-	id : id . COMMA ID
-	asgn_stmt : id . ASSIGN asgn_stmt
-	exp : id .  (54)
-	asgn_stmt : id . ASSIGN exp
-
-	ASSIGN  shift 95
-	COMMA  shift 96
-	.  reduce 54
-
-
-state 47
-	stmt : output_stmt . SIMICOLON
-
-	SIMICOLON  shift 97
-
-
-state 48
-	dec_stmt : type . id
-
-	ID  shift 35
-
-	id  goto 98
 
 
 state 49
@@ -625,51 +626,24 @@ state 49
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 99
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 50
 	program : INT MAIN LPRACE RPRACE LBRACE code . RBRACE
-	code : code . stmt
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
 	RBRACE  shift 100
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
-	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
 
 
 state 51
@@ -690,84 +664,30 @@ state 51
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 101
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 52
 	program : VOID MAIN LPRACE RPRACE LBRACE code . RBRACE
-	code : code . stmt
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
 	RBRACE  shift 102
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
-	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
 
 
 state 53
 	program : MAIN LPRACE VOID RPRACE LBRACE code . RBRACE
-	code : code . stmt
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
 	RBRACE  shift 103
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
-	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
 
 
 state 54
@@ -793,8 +713,8 @@ state 55
 
 
 state 56
-	for_stmt : FOR LPRACE . asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
-	for_stmt : FOR LPRACE . id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE . asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
+	for_stmt : FOR LPRACE . id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
 	ID  shift 35
 
@@ -821,324 +741,294 @@ state 58
 
 
 state 59
-	exp : LPRACE exp . RPRACE
 	exp : exp . op exp
+	exp : LPRACE exp . RPRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	RPRACE  shift 110
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
-60: shift-reduce conflict (shift 96, reduce 54) on COMMA
 state 60
-	id : id . COMMA ID
 	exp : id .  (54)
 
-	COMMA  shift 96
 	.  reduce 54
 
 
 state 61
+	id : ID COMMA . id
+
+	ID  shift 35
+
+	id  goto 111
+
+
+state 62
+	stmt : dec_stmt SIMICOLON .  (11)
+
+	.  reduce 11
+
+
+state 63
 	ari_op : PLUS .  (27)
 
 	.  reduce 27
 
 
-state 62
+state 64
 	ari_op : MINUS .  (28)
 
 	.  reduce 28
 
 
-state 63
+state 65
 	ari_op : MUL .  (29)
 
 	.  reduce 29
 
 
-state 64
+state 66
 	ari_op : DIV .  (30)
 
 	.  reduce 30
 
 
-state 65
+state 67
 	ari_op : MOD .  (31)
 
 	.  reduce 31
 
 
-state 66
+state 68
 	ari_op : INC .  (32)
 
 	.  reduce 32
 
 
-state 67
+state 69
 	ari_op : DEC .  (33)
 
 	.  reduce 33
 
 
-state 68
+state 70
 	ari_op : INAD .  (34)
 
 	.  reduce 34
 
 
-state 69
+state 71
 	ari_op : IOR .  (35)
 
 	.  reduce 35
 
 
-state 70
+state 72
 	ari_op : XOR .  (36)
 
 	.  reduce 36
 
 
-state 71
+state 73
 	ari_op : NOT .  (37)
 
 	.  reduce 37
 
 
-state 72
+state 74
 	ari_op : SHL .  (38)
 
 	.  reduce 38
 
 
-state 73
+state 75
 	ari_op : SHR .  (39)
 
 	.  reduce 39
 
 
-state 74
+state 76
 	rel_op : EQ .  (40)
 
 	.  reduce 40
 
 
-state 75
+state 77
 	rel_op : GT .  (41)
 
 	.  reduce 41
 
 
-state 76
+state 78
 	rel_op : LT .  (42)
 
 	.  reduce 42
 
 
-state 77
+state 79
 	rel_op : GE .  (43)
 
 	.  reduce 43
 
 
-state 78
+state 80
 	rel_op : LE .  (44)
 
 	.  reduce 44
 
 
-state 79
+state 81
 	rel_op : NEQ .  (45)
 
 	.  reduce 45
 
 
-state 80
+state 82
 	log_op : AND .  (46)
 
 	.  reduce 46
 
 
-state 81
+state 83
 	log_op : OR .  (47)
 
 	.  reduce 47
 
 
-state 82
+state 84
 	log_op : OPPOSITE .  (48)
 
 	.  reduce 48
 
 
-state 83
+state 85
 	op : ASSIGN .  (26)
 
 	.  reduce 26
 
 
-state 84
+state 86
 	stmt : exp SIMICOLON .  (9)
 
 	.  reduce 9
 
 
-state 85
-	op : rel_op .  (24)
-
-	.  reduce 24
-
-
-state 86
-	op : ari_op .  (23)
-
-	.  reduce 23
-
-
 state 87
-	op : log_op .  (25)
-
-	.  reduce 25
-
-
-state 88
 	exp : exp op . exp
 
 	LPRACE  shift 34
 	ID  shift 35
 	NUMBER  shift 36
 
-	exp  goto 111
+	exp  goto 112
 	id  goto 60
 
 
+state 88
+	op : log_op .  (25)
+
+	.  reduce 25
+
+
 state 89
-	asgn_stmt : asgn_stmt COMMA . id
+	op : ari_op .  (23)
 
-	ID  shift 35
-
-	id  goto 112
+	.  reduce 23
 
 
 state 90
-	stmt : asgn_stmt SIMICOLON .  (10)
+	op : rel_op .  (24)
 
-	.  reduce 10
+	.  reduce 24
 
 
 state 91
-	stmt : dec_stmt SIMICOLON .  (11)
-
-	.  reduce 11
-
-
-state 92
 	program : MAIN LPRACE RPRACE LBRACE code RBRACE .  (1)
 
 	.  reduce 1
 
 
+state 92
+	asgn_stmt : asgn_stmt COMMA . id
+
+	ID  shift 35
+
+	id  goto 113
+
+
 state 93
-	code : code stmt .  (8)
+	stmt : asgn_stmt SIMICOLON .  (10)
+
+	.  reduce 10
+
+
+state 94
+	code : stmt code .  (8)
 
 	.  reduce 8
 
 
-state 94
+state 95
 	stmt : input_stmt SIMICOLON .  (15)
 
 	.  reduce 15
 
 
-state 95
-	asgn_stmt : id ASSIGN . asgn_stmt
-	asgn_stmt : id ASSIGN . exp
-
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	exp  goto 113
-	asgn_stmt  goto 114
-	id  goto 46
-
-
 state 96
-	id : id COMMA . ID
-
-	ID  shift 115
-
-
-state 97
 	stmt : output_stmt SIMICOLON .  (16)
 
 	.  reduce 16
 
 
-state 98
-	id : id . COMMA ID
+state 97
 	dec_stmt : type id .  (58)
 
-	COMMA  shift 96
 	.  reduce 58
 
 
-state 99
-	program : INT MAIN LPRACE VOID RPRACE LBRACE code . RBRACE
-	code : code . stmt
+state 98
+	asgn_stmt : id ASSIGN . exp
+	asgn_stmt : id ASSIGN . asgn_stmt
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
-	RBRACE  shift 116
 	LPRACE  shift 34
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	exp  goto 114
+	asgn_stmt  goto 115
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+
+
+state 99
+	program : INT MAIN LPRACE VOID RPRACE LBRACE code . RBRACE
+
+	RBRACE  shift 116
 
 
 state 100
@@ -1149,35 +1039,8 @@ state 100
 
 state 101
 	program : VOID MAIN LPRACE VOID RPRACE LBRACE code . RBRACE
-	code : code . stmt
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
 	RBRACE  shift 117
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
-	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
 
 
 state 102
@@ -1196,108 +1059,102 @@ state 104
 	if_stmt : IF LPRACE exp . RPRACE stmt
 	exp : exp . op exp
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	RPRACE  shift 118
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 105
-	while_stmt : WHILE LPRACE exp . RPRACE LBRACE code RBRACE
 	exp : exp . op exp
+	while_stmt : WHILE LPRACE exp . RPRACE LBRACE code RBRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	RPRACE  shift 119
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 106
 	asgn_stmt : asgn_stmt . COMMA id
-	for_stmt : FOR LPRACE asgn_stmt . SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt . SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
-	COMMA  shift 89
+	COMMA  shift 92
 	SIMICOLON  shift 120
 
 
 state 107
-	id : id . COMMA ID
-	asgn_stmt : id . ASSIGN asgn_stmt
 	asgn_stmt : id . ASSIGN exp
-	for_stmt : FOR LPRACE id . SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	asgn_stmt : id . ASSIGN asgn_stmt
+	for_stmt : FOR LPRACE id . SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
-	ASSIGN  shift 95
-	COMMA  shift 96
+	ASSIGN  shift 98
 	SIMICOLON  shift 121
 
 
 state 108
-	id : id . COMMA ID
 	input_stmt : CIN SHR id .  (63)
 	input_stmt : CIN SHR id . SHR ENDL
 
 	SHR  shift 122
-	COMMA  shift 96
 	.  reduce 63
 
 
 state 109
-	id : id . COMMA ID
 	output_stmt : COUT SHL id .  (65)
 	output_stmt : COUT SHL id . SHL ENDL
 
 	SHL  shift 123
-	COMMA  shift 96
 	.  reduce 65
 
 
@@ -1307,117 +1164,116 @@ state 110
 	.  reduce 52
 
 
-111: shift-reduce conflict (shift 61, reduce 51) on PLUS
-111: shift-reduce conflict (shift 62, reduce 51) on MINUS
-111: shift-reduce conflict (shift 63, reduce 51) on MUL
-111: shift-reduce conflict (shift 64, reduce 51) on DIV
-111: shift-reduce conflict (shift 65, reduce 51) on MOD
-111: shift-reduce conflict (shift 66, reduce 51) on INC
-111: shift-reduce conflict (shift 67, reduce 51) on DEC
-111: shift-reduce conflict (shift 68, reduce 51) on INAD
-111: shift-reduce conflict (shift 69, reduce 51) on IOR
-111: shift-reduce conflict (shift 70, reduce 51) on XOR
-111: shift-reduce conflict (shift 71, reduce 51) on NOT
-111: shift-reduce conflict (shift 72, reduce 51) on SHL
-111: shift-reduce conflict (shift 73, reduce 51) on SHR
-111: shift-reduce conflict (shift 74, reduce 51) on EQ
-111: shift-reduce conflict (shift 75, reduce 51) on GT
-111: shift-reduce conflict (shift 76, reduce 51) on LT
-111: shift-reduce conflict (shift 77, reduce 51) on GE
-111: shift-reduce conflict (shift 78, reduce 51) on LE
-111: shift-reduce conflict (shift 79, reduce 51) on NEQ
-111: shift-reduce conflict (shift 80, reduce 51) on AND
-111: shift-reduce conflict (shift 81, reduce 51) on OR
-111: shift-reduce conflict (shift 82, reduce 51) on OPPOSITE
-111: shift-reduce conflict (shift 83, reduce 51) on ASSIGN
 state 111
+	id : ID COMMA id .  (50)
+
+	.  reduce 50
+
+
+112: shift-reduce conflict (shift 63, reduce 51) on PLUS
+112: shift-reduce conflict (shift 64, reduce 51) on MINUS
+112: shift-reduce conflict (shift 65, reduce 51) on MUL
+112: shift-reduce conflict (shift 66, reduce 51) on DIV
+112: shift-reduce conflict (shift 67, reduce 51) on MOD
+112: shift-reduce conflict (shift 68, reduce 51) on INC
+112: shift-reduce conflict (shift 69, reduce 51) on DEC
+112: shift-reduce conflict (shift 70, reduce 51) on INAD
+112: shift-reduce conflict (shift 71, reduce 51) on IOR
+112: shift-reduce conflict (shift 72, reduce 51) on XOR
+112: shift-reduce conflict (shift 73, reduce 51) on NOT
+112: shift-reduce conflict (shift 74, reduce 51) on SHL
+112: shift-reduce conflict (shift 75, reduce 51) on SHR
+112: shift-reduce conflict (shift 76, reduce 51) on EQ
+112: shift-reduce conflict (shift 77, reduce 51) on GT
+112: shift-reduce conflict (shift 78, reduce 51) on LT
+112: shift-reduce conflict (shift 79, reduce 51) on GE
+112: shift-reduce conflict (shift 80, reduce 51) on LE
+112: shift-reduce conflict (shift 81, reduce 51) on NEQ
+112: shift-reduce conflict (shift 82, reduce 51) on AND
+112: shift-reduce conflict (shift 83, reduce 51) on OR
+112: shift-reduce conflict (shift 84, reduce 51) on OPPOSITE
+112: shift-reduce conflict (shift 85, reduce 51) on ASSIGN
+state 112
 	exp : exp op exp .  (51)
 	exp : exp . op exp
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	.  reduce 51
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
-state 112
-	id : id . COMMA ID
+state 113
 	asgn_stmt : asgn_stmt COMMA id .  (56)
 
 	.  reduce 56
 
 
-state 113
-	exp : exp . op exp
+state 114
 	asgn_stmt : id ASSIGN exp .  (55)
+	exp : exp . op exp
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	.  reduce 55
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
-
-
-state 114
-	asgn_stmt : id ASSIGN asgn_stmt .  (57)
-	asgn_stmt : asgn_stmt . COMMA id
-
-	.  reduce 57
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 115
-	id : id COMMA ID .  (50)
+	asgn_stmt : asgn_stmt . COMMA id
+	asgn_stmt : id ASSIGN asgn_stmt .  (57)
 
-	.  reduce 50
+	.  reduce 57
 
 
 state 116
@@ -1450,17 +1306,17 @@ state 118
 	ID  shift 35
 	NUMBER  shift 36
 
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
+	asgn_stmt  goto 41
 	stmt  goto 124
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 119
@@ -1470,7 +1326,7 @@ state 119
 
 
 state 120
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON . exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON . exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
 	LPRACE  shift 34
 	ID  shift 35
@@ -1481,7 +1337,7 @@ state 120
 
 
 state 121
-	for_stmt : FOR LPRACE id SIMICOLON . exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON . exp SIMICOLON exp RPRACE LBRACE code RBRACE
 
 	LPRACE  shift 34
 	ID  shift 35
@@ -1527,88 +1383,88 @@ state 125
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 37
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
 	code  goto 130
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 126
 	exp : exp . op exp
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp . SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp . SIMICOLON exp RPRACE LBRACE code RBRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	SIMICOLON  shift 131
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 127
 	exp : exp . op exp
-	for_stmt : FOR LPRACE id SIMICOLON exp . SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp . SIMICOLON exp RPRACE LBRACE code RBRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	SIMICOLON  shift 132
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 128
@@ -1624,40 +1480,13 @@ state 129
 
 
 state 130
-	code : code . stmt
 	while_stmt : WHILE LPRACE exp RPRACE LBRACE code . RBRACE
 
-	INT  shift 23
-	DOUBLE  shift 24
-	FLOAT  shift 25
-	CHAR  shift 26
-	BOOL  shift 27
-	VOID  shift 28
-	IF  shift 29
-	WHILE  shift 30
-	FOR  shift 31
-	CIN  shift 32
-	COUT  shift 33
 	RBRACE  shift 133
-	LPRACE  shift 34
-	ID  shift 35
-	NUMBER  shift 36
-
-	stmt  goto 93
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
-	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
-	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
 
 
 state 131
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON . exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON . exp RPRACE LBRACE code RBRACE
 
 	LPRACE  shift 34
 	ID  shift 35
@@ -1668,7 +1497,7 @@ state 131
 
 
 state 132
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON . exp RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON . exp RPRACE LBRACE code RBRACE
 
 	LPRACE  shift 34
 	ID  shift 35
@@ -1686,88 +1515,88 @@ state 133
 
 state 134
 	exp : exp . op exp
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp . RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp . RPRACE LBRACE code RBRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	RPRACE  shift 136
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 135
 	exp : exp . op exp
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp . RPRACE LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp . RPRACE LBRACE code RBRACE
 
-	PLUS  shift 61
-	MINUS  shift 62
-	MUL  shift 63
-	DIV  shift 64
-	MOD  shift 65
-	INC  shift 66
-	DEC  shift 67
-	INAD  shift 68
-	IOR  shift 69
-	XOR  shift 70
-	NOT  shift 71
-	SHL  shift 72
-	SHR  shift 73
-	EQ  shift 74
-	GT  shift 75
-	LT  shift 76
-	GE  shift 77
-	LE  shift 78
-	NEQ  shift 79
-	AND  shift 80
-	OR  shift 81
-	OPPOSITE  shift 82
-	ASSIGN  shift 83
+	PLUS  shift 63
+	MINUS  shift 64
+	MUL  shift 65
+	DIV  shift 66
+	MOD  shift 67
+	INC  shift 68
+	DEC  shift 69
+	INAD  shift 70
+	IOR  shift 71
+	XOR  shift 72
+	NOT  shift 73
+	SHL  shift 74
+	SHR  shift 75
+	EQ  shift 76
+	GT  shift 77
+	LT  shift 78
+	GE  shift 79
+	LE  shift 80
+	NEQ  shift 81
+	AND  shift 82
+	OR  shift 83
+	OPPOSITE  shift 84
+	ASSIGN  shift 85
 	RPRACE  shift 137
 
-	rel_op  goto 85
-	ari_op  goto 86
-	log_op  goto 87
-	op  goto 88
+	op  goto 87
+	log_op  goto 88
+	ari_op  goto 89
+	rel_op  goto 90
 
 
 state 136
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE . LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE . LBRACE code RBRACE
 
 	LBRACE  shift 138
 
 
 state 137
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE . LBRACE stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE . LBRACE code RBRACE
 
 	LBRACE  shift 139
 
 
 state 138
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE . stmt RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE . code RBRACE
 
 	INT  shift 23
 	DOUBLE  shift 24
@@ -1784,21 +1613,22 @@ state 138
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 140
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
+	code  goto 140
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 139
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE . stmt RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE . code RBRACE
 
 	INT  shift 23
 	DOUBLE  shift 24
@@ -1815,39 +1645,40 @@ state 139
 	ID  shift 35
 	NUMBER  shift 36
 
-	stmt  goto 141
-	exp  goto 38
-	asgn_stmt  goto 39
-	dec_stmt  goto 40
-	if_stmt  goto 41
+	dec_stmt  goto 37
+	if_stmt  goto 38
+	exp  goto 39
+	code  goto 141
+	asgn_stmt  goto 41
+	stmt  goto 42
 	input_stmt  goto 43
-	while_stmt  goto 44
-	for_stmt  goto 45
+	output_stmt  goto 44
+	type  goto 45
 	id  goto 46
-	output_stmt  goto 47
-	type  goto 48
+	while_stmt  goto 47
+	for_stmt  goto 48
 
 
 state 140
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt . RBRACE
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code . RBRACE
 
 	RBRACE  shift 142
 
 
 state 141
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt . RBRACE
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code . RBRACE
 
 	RBRACE  shift 143
 
 
 state 142
-	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE .  (61)
+	for_stmt : FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE .  (61)
 
 	.  reduce 61
 
 
 state 143
-	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE .  (62)
+	for_stmt : FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE .  (62)
 
 	.  reduce 62
 
@@ -1856,9 +1687,9 @@ state 143
 # Summary
 ##############################################################################
 
-State 46 contains 2 shift-reduce conflict(s)
-State 60 contains 1 shift-reduce conflict(s)
-State 111 contains 23 shift-reduce conflict(s)
+State 35 contains 1 shift-reduce conflict(s)
+State 46 contains 1 shift-reduce conflict(s)
+State 112 contains 23 shift-reduce conflict(s)
 
 
 46 token(s), 18 nonterminal(s)

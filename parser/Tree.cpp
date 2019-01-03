@@ -27,7 +27,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 		node->type.stmt_type = type;
 		//node->lineno = ++tree.all_line;
 		node->data_type = VOID;
-		node->label.curr_label = "";
+		node->label.curr_label = 0;
 		//node->node_num = tree.all_node++;//在输出的时候赋值
 	}
 
@@ -48,7 +48,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 		node->node_type = exps;
 		node->type.exp_type = type;
 		//node->lineno = ++tree.all_line;
-		node->label.curr_label = "";
+		node->label.curr_label = 0;
 		//node->node_num = tree.all_node++;
 	}
 
@@ -74,10 +74,10 @@ int ParseTree::search_table(char *id)
 
 void ParseTree::print_child(TreeNode *node)
 {
-	if (node->brother)
-		print_child(node->brother);
 	cout.width(2);
 	cout << node->node_num << " ";
+	if (node->brother)
+		print_child(node->brother);
 }
 
 void ParseTree::print_node(TreeNode *node)
@@ -150,28 +150,33 @@ void ParseTree::print_tree(TreeNode *node)
 {
 	if (node != NULL)
 	{
-		if (node->brother)
-			print_tree(node->brother);
+
 		for (int i = 0; i < MAXCHILDREN; i++)
 		{
 			if (node->child[i])
 				print_tree(node->child[i]);
 		}
+
 		print_node(node);
-		gen_code(node);
+		//gen_code(node);
+		if (node->brother)
+			print_tree(node->brother);
 	}
 }
 
 //类型检查
 void ParseTree::check_node(TreeNode *node)
 {
+	TreeNode *t1 = node->child[0];
+	TreeNode *t2 = node->child[1];
+
 	switch (node->node_type)
 	{
 	case exps:
 		switch (node->type.exp_type)
 		{
 		case oper:
-			if ((node->child[0]->data_type != INT) || (node->child[1]->data_type != INT))
+			if ((node->child[0]->data_type != INT) || (t2->data_type != INT))
 			{
 				write_error(node, "Op applied to non-integer");
 				break;
@@ -197,34 +202,34 @@ void ParseTree::check_node(TreeNode *node)
 				//write_error(node, "type_spe of non-integer value");
 			break;
 		case if_stmt:
-			if (node->child[0]->data_type != BOOL)
-				write_error(node->child[0], "if_stmt test is not Boolean");
+			if (t1->data_type != BOOL)
+				write_error(t1, "if_stmt test is not Boolean");
 			else
-				node->data_type = node->child[0]->data_type;
+				node->data_type = t1->data_type;
 			break;
 		case asgn_stmt:
-			if (node->child[0]->data_type != node->child[1]->data_type)
+			if (t1->data_type != t2->data_type)
 				write_error(node, "asgn_stmt of different type");
 			else
-				node->data_type = node->child[0]->data_type;
+				node->data_type = t1->data_type;
 			break;
 		case dec_stmt:
-			if (node->child[0]->data_type != INT)
+			if (t1->data_type != INT)
 				write_error(node, "dec_stmt of non-integer value");
 			else
-				node->data_type = node->child[0]->data_type;
+				node->data_type = t1->data_type;
 			break;
 		case for_stmt:
-			if (node->child[0]->data_type != INT)
-				write_error(node->child[0], "for_stmt of non-integer value");
+			if (t1->data_type != INT)
+				write_error(t1, "for_stmt of non-integer value");
 			else
-				node->data_type = node->child[0]->data_type;
+				node->data_type = t1->data_type;
 			break;
 		case while_stmt:
-			if (node->child[1]->data_type != BOOL)
-				write_error(node->child[1], "while_stmt test is not Boolean");
+			if (t2->data_type != BOOL)
+				write_error(t2, "while_stmt test is not Boolean");
 			else
-				node->data_type = node->child[0]->data_type;
+				node->data_type = t1->data_type;
 			break;
 		default:
 			node->data_type = VOID;
@@ -309,6 +314,8 @@ void ParseTree::gen_dec(TreeNode *node)
 	}
 	for (int i = 0; i < temp_sum; i++)
 		fout << "\t\t t" << i << " DWORD 0" << endl;
+	fout << "\t\tszd db  '%d',0" << endl;
+	fout << "\t\tszc db  '%c',0" << endl;
 	fout << "\t\t buffer BYTE 128 dup(0)" << endl;
 	fout << "\t\t LF BYTE 13, 10, 0" << endl;
 	fout << endl;
@@ -323,10 +330,12 @@ void ParseTree::gen_expcode(TreeNode *node)
 	ofstream fout("code.txt", ios::app);
 	if (!fout)
 		return;
-	if (node->label.curr_label != "")
-		fout << node->label.curr_label << ":" << endl;
+	if (node->label.curr_label > 0)
+		fout << "L" << node->label.curr_label << ":" << endl;
+	
 	TreeNode *t1 = node->child[0];
 	TreeNode *t2 = node->child[1];
+
 	switch (node->attr.op)
 	{
 	case PLUS:
@@ -336,7 +345,11 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
 		else
+		{
+			if(t1->temp_num < 0)
+				t1->temp_num = tree.temp_sum++;
 			fout << "t" << t1->temp_num;
+		}
 		fout << endl;
 
 		fout << "\tADD eax, ";
@@ -344,9 +357,19 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
-		else fout << "t" << t2->temp_num;
+		else 
+		{
+			if (t2->temp_num < 0)
+				t2->temp_num = tree.temp_sum++;
+			fout << "t" << t2->temp_num;
+		}
 		fout << endl;
-		fout << "\tMOV t" << node->temp_num << ", eax" << endl;
+		fout << "\tMOV ";
+		if (node->temp_num < 0)
+			node->temp_num = tree.temp_sum++;
+		fout << "t" << node->temp_num;
+		fout << ", eax";
+		fout << endl;
 		break;
 	case LT://小于
 		fout << "\tMOV eax, ";
@@ -354,17 +377,27 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "_" << symbol_table[t1->address];
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
-		else fout << "t" << t1->temp_num;
+		else
+		{
+			if (t1->temp_num < 0)
+				t1->temp_num = tree.temp_sum++;
+			fout << "t" << t1->temp_num;
+		}
 		fout << endl;
 		fout << "\tCMP eax, ";
 		if (t2->type.exp_type == id)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
-		else fout << "t" << t2->temp_num;
+		else 
+		{
+			if (t2->temp_num < 0)
+				t2->temp_num = tree.temp_sum++;
+			fout << "t" << t2->temp_num;
+		}
 		fout << endl;
-		fout << "\tjl " << node->label.true_label << endl;
-		fout << "\tjmp " << node->label.false_label << endl;
+		fout << "\tjl " << "L" << node->label.true_label << endl;
+		fout << "\tjmp " << "L" << node->label.false_label << endl;
 		break;
 	//case 
 	}
@@ -379,58 +412,87 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		return;
 
 	//检查当前结点是否会是跳转的位置
-	if (node->label.curr_label != "")
-		fout << node->label.curr_label << ":" << endl;
-	TreeNode *temp;
+	if (node->label.curr_label > 0)
+		fout << "L" << node->label.curr_label << ":" << endl;
+
+	TreeNode *t1 = node->child[0];
+	TreeNode *t2 = node->child[1];
+	if (!t1 )
+		return;
 	switch (node->type.stmt_type)
 	{
 	case com_stmt:
-		temp = node->child[0];
-		while (temp)
+		while (t1)
 		{
-			gen_code(temp);
-			temp = temp->brother;
+			gen_code(t1);
+			t1 = t1->brother;
 		}
 		break;
 	case while_stmt:
-		gen_code(node->child[0]);
-		gen_code(node->child[1]);
-		fout << "\tjmp " << node->label.begin_label << endl;
+		//fout << "L" << node->label.begin_label << " " << endl;
+		gen_code(t1);
+		gen_code(t2);
+		fout << "\tjmp " << "L" << node->label.begin_label << endl;
+		break;
+	case if_stmt:
+		gen_code(t1);
+		gen_code(t2);
+		break;
+	case for_stmt:
+		gen_code(t1);
+		gen_code(t2);
 		break;
 	case asgn_stmt:
-		temp = node->child[1];
 		fout << "\tMOV eax, ";
-		if (temp->type.exp_type == id)
-			fout << "_" << symbol_table[temp->address];
-		else if (temp->type.exp_type == number)
-			fout << temp->attr.value;
+		if (t2->type.exp_type == id)
+			fout << "_" << symbol_table[t2->address];
+		else if (t2->type.exp_type == number)
+			fout << t2->attr.value;
 		else
-			fout << "t" << temp->temp_num;
+		{
+			if (t2->temp_num < 0)
+				t2->temp_num = tree.temp_sum++;
+			fout << "t" << t2->temp_num;
+		}
 		fout << endl;
-		fout << "\tMOV t" << node->child[0]->temp_num << ", eax" << endl;
+
+		fout << "\tMOV ";
+		if (t1->type.exp_type == id)
+			fout << "_" << symbol_table[t1->address];
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value;
+		else
+		{
+			if (t1->temp_num < 0)
+				t1->temp_num = tree.temp_sum++;
+			fout << "t" << t1->temp_num;
+		}
+		fout << ", eax";
 		fout << endl;
 		break;
 	case input_stmt:
-		if (node->child[0]->data_type == INT)
+		if (t1->data_type == INT)
 			fout << "\tinvoke crt_scanf ,addr szd,addr _";
-		else if (node->child[0]->data_type == CHAR)
+		else if (t1->data_type == CHAR)
 			fout << "\tinvoke crt_scanf ,addr szc,addr _";
-		fout << node->child[0]->attr.name << endl;
+		fout << t1->attr.name << endl;
 		break;
 	case output_stmt:
 		fout << "\tMOV eax,";
-		if (node->child[0]->type.exp_type == id)
-			fout << "_" << node->child[0]->attr.name << endl;
-		else if (node->child[0]->type.exp_type == number)
-			fout << node->child[0]->attr.value << endl;
-		if (node->child[0]->data_type == INT)
+		if (t1->type.exp_type == id)
+			fout << "_" << t1->attr.name << endl;
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value << endl;
+		if (t1->data_type == INT)
 			fout << "\tinvoke crt_printf ,addr szd,eax" << endl;
-		if (node->child[0]->data_type == CHAR)
+		if (t1->data_type == CHAR)
 			fout << "\tinvoke crt_printf ,addr szc,eax" << endl;
 		break;
 	default:
-		break;
+		fout.close();
+		return;
 	}
+	fout << endl;
 	fout.close();
 }
 

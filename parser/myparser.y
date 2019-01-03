@@ -94,12 +94,12 @@ code
 		$$ = $1;
 		tree.root = $$;
 	}
-	|code stmt	
+	|stmt code
 	{
-		$$ = $2;
-		$$->brother = $1;
+		$$ = $1;
+		$$->brother = $2;
 		node->child[0] = $$;
-		tree.root=node;
+		tree.root = node; 
 	}
 	;
 
@@ -292,12 +292,12 @@ id
 		$$->data_type = INT;
 		$$->data_type = tree.id_type[$$->address];
 	}
-	|id COMMA ID //id按顺序
-	{		
+	|ID COMMA id
+	{
 		$$ = node->exp_node(id);
-		strcpy($$->attr.name , $3->attr.name);
+		strcpy($$->attr.name , $1->attr.name);
 		$$->address = tree.search_table($$->attr.name);
-		$$->brother = $1;
+		$$->brother = $3;
 	}
 	;
 
@@ -367,7 +367,8 @@ if_stmt
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 	//	sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-	//	$$->label.true_label = $5->label.curr_label;
+		$5->label.curr_label = tree.label_sum++;
+		$$->label.true_label = $5->label.curr_label;
 	}
 	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
 	// {
@@ -390,15 +391,18 @@ while_stmt
 	{
 		$$ = node->stmt_node(while_stmt);
 		$$->child[0] = $3;
-		$$->child[1] = $6;
+		//$$->child[1] = $6;
+		$$->child[1] = node->stmt_node(com_stmt);
+		$$->child[1]->child[0] = $6;
 	//	sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);
-	//	$$->label.true_label = $6->label.curr_label;
+		$6->label.curr_label = tree.label_sum++;
+		$$->label.true_label = $6->label.curr_label;
 	}
 	;
 	
 //定义for语句
 for_stmt 
-	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	:FOR LPRACE asgn_stmt SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 	{
 		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
@@ -406,9 +410,10 @@ for_stmt
 		$$->child[2] = $7;
 		$$->child[3]= $10;
 	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
-	//	$$->label.true_label = $10->label.curr_label;
+		$10->label.curr_label = tree.label_sum++;
+		$$->label.true_label = $10->label.curr_label;
 	}
-	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE stmt RBRACE
+	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 	{
 		$$ = node->stmt_node(for_stmt);
 		$$->child[0] = $3;
@@ -416,7 +421,8 @@ for_stmt
 		$$->child[2] = $7;
 		$$->child[3]= $10;
 	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
-	//	$$->label.true_label = $10->label.curr_label;
+		$10->label.curr_label = tree.label_sum++;
+		$$->label.true_label = $10->label.curr_label;
 	}
 	;
 
@@ -472,6 +478,7 @@ int main(void)
 			freopen("CON", "r", stdin);
 			
 			tree.gen_dec(tree.root);
+			tree.gen_code(tree.root);
 			tree.print_tree(tree.root);
 		}
 	}

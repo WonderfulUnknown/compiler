@@ -29,7 +29,7 @@ struct TreeNode
 {
 	struct TreeNode * child[MAXCHILDREN];
 	struct TreeNode * brother;
-
+	struct TreeNode * after;
 	int lineno;//结点在代码中的行号
 	int node_num;//结点相对于整棵树的编号
 	int data_type;//记录类型
@@ -54,10 +54,14 @@ struct TreeNode
 	union JmpAddress
 	{
 		//用于控制流语句跳转时填入
-		char *true_label;
-		char *false_label;
-		char *begin_label;
-		char *curr_label;
+		int true_label;
+		int false_label;
+		int begin_label;
+		int curr_label;
+		//char *true_label;
+		//char *false_label;
+		//char *begin_label;
+		//char *curr_label;
 	}label;
 
 	TreeNode* stmt_node(StmtType type);
@@ -74,7 +78,7 @@ struct ParseTree
 	int all_line = 0;//记录代码的行数
 	int all_node = 0;//记录树中结点数量
 	int temp_sum = 0;//记录临时变量数量
-	int label_sum = 0;//记录标签数量
+	int label_sum = 1;//记录标签数量
 
 	TreeNode * root;//代码的根结点
 
