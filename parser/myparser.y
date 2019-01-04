@@ -93,6 +93,12 @@ code
 	{
 		$$ = $1;
 		tree.root = $$;
+		if($1->type.stmt_type == while_stmt || $1->type.stmt_type == if_stmt)
+			$1->child[0]->false_label = tree.label_sum++;
+			//ofstream fout("code.txt", ios::app);
+			//fout << "L" << $1->child[0]->false_label << ":" << endl;
+		else if($1->type.stmt_type == for_stmt)
+			$1->child[1]->false_label = tree.label_sum++;
 	}
 	|stmt code
 	{
@@ -100,6 +106,12 @@ code
 		$$->brother = $2;
 		node->child[0] = $$;
 		tree.root = node; 
+		if($1->type.stmt_type == for_stmt || $1->type.stmt_type == while_stmt || $1->type.stmt_type == if_stmt)
+		{
+			if($2->curr_label <= 0)
+				$2->curr_label = tree.label_sum++;
+			$1->child[0]->false_label = $2->curr_label;
+		}
 	}
 	;
 
@@ -366,22 +378,27 @@ if_stmt
 		$$ = node->stmt_node(if_stmt);
 		$$->child[0] = $3;
 		$$->child[1] = $5;
-	//	sprintf_s($5->label.curr_label,sizeof($5->label.curr_label), "L%d", tree.label_sum++);//拼接函数
-		$5->label.curr_label = tree.label_sum++;
-		$$->label.true_label = $5->label.curr_label;
+	//	sprintf_s($5->curr_label,sizeof($5->curr_label), "L%d", tree.label_sum++);//拼接函数
+		$5->curr_label = tree.label_sum++;
+		$$->true_label = $5->curr_label;
 	}
-	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE stmt RBRACE
+	|IF LPRACE exp RPRACE LBRACE code RBRACE
+	{
+		$$ = node->stmt_node(if_stmt);
+		$$->child[0] = $3;
+		$$->child[1] = node->stmt_node(com_stmt);
+		$$->child[1]->child[0] = $6;
+		$5->curr_label = tree.label_sum++;
+		$$->true_label = $5->curr_label;
+	}
+	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE ELSE LBRACE code RBRACE
 	// {
 	// 	$$ = node->stmt_node(if_stmt);
 	// 	$$->child[0] = $3;
 	// 	$$->child[1] = $6;
 	// 	$$->child[2] = $10;
-	// }
-	// |IF LPRACE exp RPRACE LBRACE stmt RBRACE
-	// {
-	// 	$$ = node->stmt_node(if_stmt);
-	// 	$$->child[0] = $3;
-	// 	$$->child[1] = $6;
+	// 	$5->curr_label = tree.label_sum++;
+	// 	$$->true_label = $5->curr_label;
 	// }
 	;
 
@@ -390,13 +407,14 @@ while_stmt
 	:WHILE LPRACE exp RPRACE LBRACE code RBRACE
 	{
 		$$ = node->stmt_node(while_stmt);
+		$$->curr_label = tree.label_sum++;
 		$$->child[0] = $3;
 		//$$->child[1] = $6;
 		$$->child[1] = node->stmt_node(com_stmt);
 		$$->child[1]->child[0] = $6;
-	//	sprintf_s($6->label.curr_label,sizeof($6->label.curr_label), "L%d", tree.label_sum++);
-		$6->label.curr_label = tree.label_sum++;
-		$$->label.true_label = $6->label.curr_label;
+	//	sprintf_s($6->curr_label,sizeof($6->curr_label), "L%d", tree.label_sum++);
+		$6->curr_label = tree.label_sum++;
+		$3->true_label = $6->curr_label;
 	}
 	;
 	
@@ -408,10 +426,11 @@ for_stmt
 		$$->child[0] = $3;
 		$$->child[1] = $5;
 		$$->child[2] = $7;
-		$$->child[3]= $10;
-	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
-		$10->label.curr_label = tree.label_sum++;
-		$$->label.true_label = $10->label.curr_label;
+		$$->child[3] = node->stmt_node(com_stmt);
+		$$->child[3]->child[0] = $10;
+	//	sprintf_s($10->curr_label,sizeof($10->curr_label), "L%d", tree.label_sum++);
+		$10->curr_label = tree.label_sum++;
+		$$->true_label = $10->curr_label;
 	}
 	|FOR LPRACE id SIMICOLON exp SIMICOLON exp RPRACE LBRACE code RBRACE
 	{
@@ -420,9 +439,11 @@ for_stmt
 		$$->child[1] = $5;
 		$$->child[2] = $7;
 		$$->child[3]= $10;
-	//	sprintf_s($10->label.curr_label,sizeof($10->label.curr_label), "L%d", tree.label_sum++);
-		$10->label.curr_label = tree.label_sum++;
-		$$->label.true_label = $10->label.curr_label;
+		$$->child[3] = node->stmt_node(com_stmt);
+		$$->child[3]->child[0] = $10;
+	//	sprintf_s($10->curr_label,sizeof($10->curr_label), "L%d", tree.label_sum++);
+		$10->curr_label = tree.label_sum++;
+		$$->true_label = $10->curr_label;
 	}
 	;
 

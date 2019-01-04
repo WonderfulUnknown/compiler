@@ -36,6 +36,13 @@ struct TreeNode
 	int temp_num;//临时变量的编号
 	int address;//标识符在符号表中的位置
 
+
+	//用于控制流语句跳转时填入
+	int true_label;
+	int false_label;
+	int curr_label;
+	//int begin_label;
+
 	NodeType node_type;
 
 	union
@@ -50,19 +57,6 @@ struct TreeNode
 		double value;
 		char name[50];
 	} attr;
-
-	union JmpAddress
-	{
-		//用于控制流语句跳转时填入
-		int true_label;
-		int false_label;
-		int begin_label;
-		int curr_label;
-		//char *true_label;
-		//char *false_label;
-		//char *begin_label;
-		//char *curr_label;
-	}label;
 
 	TreeNode* stmt_node(StmtType type);
 	TreeNode* exp_node(ExpType type);

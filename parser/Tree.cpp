@@ -27,7 +27,7 @@ TreeNode * TreeNode::stmt_node(StmtType type)
 		node->type.stmt_type = type;
 		//node->lineno = ++tree.all_line;
 		node->data_type = VOID;
-		node->label.curr_label = 0;
+		node->curr_label = 0;
 		//node->node_num = tree.all_node++;//在输出的时候赋值
 	}
 
@@ -48,7 +48,7 @@ TreeNode * TreeNode::exp_node(ExpType type)
 		node->node_type = exps;
 		node->type.exp_type = type;
 		//node->lineno = ++tree.all_line;
-		node->label.curr_label = 0;
+		node->curr_label = 0;
 		//node->node_num = tree.all_node++;
 	}
 
@@ -330,8 +330,8 @@ void ParseTree::gen_expcode(TreeNode *node)
 	ofstream fout("code.txt", ios::app);
 	if (!fout)
 		return;
-	if (node->label.curr_label > 0)
-		fout << "L" << node->label.curr_label << ":" << endl;
+	if (node->curr_label > 0)
+		fout << "L" << node->curr_label << ":" << endl;
 	
 	TreeNode *t1 = node->child[0];
 	TreeNode *t2 = node->child[1];
@@ -396,8 +396,8 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "t" << t2->temp_num;
 		}
 		fout << endl;
-		fout << "\tjl " << "L" << node->label.true_label << endl;
-		fout << "\tjmp " << "L" << node->label.false_label << endl;
+		fout << "\tjl " << "L" << node->true_label << endl;
+		fout << "\tjmp " << "L" << node->false_label << endl;
 		break;
 	//case 
 	}
@@ -412,8 +412,8 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		return;
 
 	//检查当前结点是否会是跳转的位置
-	if (node->label.curr_label > 0)
-		fout << "L" << node->label.curr_label << ":" << endl;
+	if (node->curr_label > 0)
+		fout << "L" << node->curr_label << ":" << endl;
 
 	TreeNode *t1 = node->child[0];
 	TreeNode *t2 = node->child[1];
@@ -429,18 +429,21 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		}
 		break;
 	case while_stmt:
-		//fout << "L" << node->label.begin_label << " " << endl;
+		//fout << "L" << node->begin_label << " " << endl;
 		gen_code(t1);
 		gen_code(t2);
-		fout << "\tjmp " << "L" << node->label.begin_label << endl;
+		fout << "\tjmp " << "L" << node->curr_label << endl;
+		fout << "L" << node->child[0]->false_label << ":" << endl;
 		break;
 	case if_stmt:
 		gen_code(t1);
 		gen_code(t2);
+		fout << "L" << node->child[0]->false_label << ":" << endl;
 		break;
 	case for_stmt:
 		gen_code(t1);
 		gen_code(t2);
+		fout << "L" << node->child[1]->false_label << ":" << endl;
 		break;
 	case asgn_stmt:
 		fout << "\tMOV eax, ";
