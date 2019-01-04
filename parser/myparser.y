@@ -337,6 +337,11 @@ asgn_stmt
 		$$ = node->stmt_node(asgn_stmt);
 		$$->child[0] = $1;
 		$$->child[1] = $3;
+		if($3->type.exp_type == oper)
+		{
+			if ($3->temp_num < 0)
+				$3->temp_num = ++tree.temp_sum;
+		}
 	}
 	|asgn_stmt COMMA id
 	{
@@ -498,9 +503,9 @@ int main(void)
 			n = parser.yyparse();
 			freopen("CON", "r", stdin);
 			
+			tree.print_tree(tree.root);
 			tree.gen_dec(tree.root);
 			tree.gen_code(tree.root);
-			tree.print_tree(tree.root);
 		}
 	}
 	system("pause");

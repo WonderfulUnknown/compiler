@@ -145,20 +145,17 @@ void ParseTree::print_node(TreeNode *node)
 	cout << endl;
 }
 
-//后序遍历
+//后序遍历(孩子->自己->兄弟）
 void ParseTree::print_tree(TreeNode *node)
 {
 	if (node != NULL)
 	{
-
 		for (int i = 0; i < MAXCHILDREN; i++)
 		{
 			if (node->child[i])
 				print_tree(node->child[i]);
 		}
-
 		print_node(node);
-		//gen_code(node);
 		if (node->brother)
 			print_tree(node->brother);
 	}
@@ -281,7 +278,7 @@ void ParseTree::gen_header()
 	fout << "\t includelib \\masm32\\lib\\kernel32.lib" << endl;
 	fout << "\t includelib \\masm32\\lib\\masm32.lib" << endl;
 
-	fout << endl << "\t .data" << endl;
+	fout << endl << ".data" << endl;
 	fout.close();
 }
 
@@ -312,7 +309,7 @@ void ParseTree::gen_dec(TreeNode *node)
 		if (!node)
 			break;
 	}
-	for (int i = 0; i < temp_sum; i++)
+	for (int i = 1; i <= temp_sum; i++)
 		fout << "\t\t t" << i << " DWORD 0" << endl;
 	fout << "\t\tszd db  '%d',0" << endl;
 	fout << "\t\tszc db  '%c',0" << endl;
@@ -345,11 +342,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
 		else
-		{
-			if(t1->temp_num < 0)
-				t1->temp_num = tree.temp_sum++;
 			fout << "t" << t1->temp_num;
-		}
 		fout << endl;
 
 		fout << "\tADD eax, ";
@@ -358,15 +351,9 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
 		else 
-		{
-			if (t2->temp_num < 0)
-				t2->temp_num = tree.temp_sum++;
 			fout << "t" << t2->temp_num;
-		}
 		fout << endl;
 		fout << "\tMOV ";
-		if (node->temp_num < 0)
-			node->temp_num = tree.temp_sum++;
 		fout << "t" << node->temp_num;
 		fout << ", eax";
 		fout << endl;
@@ -378,11 +365,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
 		else
-		{
-			if (t1->temp_num < 0)
-				t1->temp_num = tree.temp_sum++;
 			fout << "t" << t1->temp_num;
-		}
 		fout << endl;
 		fout << "\tCMP eax, ";
 		if (t2->type.exp_type == id)
@@ -390,11 +373,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
 		else 
-		{
-			if (t2->temp_num < 0)
-				t2->temp_num = tree.temp_sum++;
 			fout << "t" << t2->temp_num;
-		}
 		fout << endl;
 		fout << "\tjl " << "L" << node->true_label << endl;
 		fout << "\tjmp " << "L" << node->false_label << endl;
@@ -433,7 +412,7 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		gen_code(t1);
 		gen_code(t2);
 		fout << "\tjmp " << "L" << node->curr_label << endl;
-		fout << "L" << node->child[0]->false_label << ":" << endl;
+		fout << "L" << node->child[0]->false_label << ":";// << endl;
 		break;
 	case if_stmt:
 		gen_code(t1);
@@ -446,17 +425,15 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		fout << "L" << node->child[1]->false_label << ":" << endl;
 		break;
 	case asgn_stmt:
+		gen_code(t1);
+		gen_code(t2);
 		fout << "\tMOV eax, ";
 		if (t2->type.exp_type == id)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
 		else
-		{
-			if (t2->temp_num < 0)
-				t2->temp_num = tree.temp_sum++;
 			fout << "t" << t2->temp_num;
-		}
 		fout << endl;
 
 		fout << "\tMOV ";
@@ -465,12 +442,9 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value;
 		else
-		{
-			if (t1->temp_num < 0)
-				t1->temp_num = tree.temp_sum++;
 			fout << "t" << t1->temp_num;
-		}
 		fout << ", eax";
+		fout << endl;
 		fout << endl;
 		break;
 	case input_stmt:
@@ -479,6 +453,7 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		else if (t1->data_type == CHAR)
 			fout << "\tinvoke crt_scanf ,addr szc,addr _";
 		fout << t1->attr.name << endl;
+		fout << endl;
 		break;
 	case output_stmt:
 		fout << "\tMOV eax,";
@@ -490,12 +465,12 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 			fout << "\tinvoke crt_printf ,addr szd,eax" << endl;
 		if (t1->data_type == CHAR)
 			fout << "\tinvoke crt_printf ,addr szc,eax" << endl;
+		fout << endl;
 		break;
 	default:
 		fout.close();
 		return;
 	}
-	fout << endl;
 	fout.close();
 }
 
