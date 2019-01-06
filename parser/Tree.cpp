@@ -269,15 +269,9 @@ void ParseTree::gen_header()
 	fout << "\t .model flat, stdcall" << endl;
 	fout << "\t option casemap :none" << endl;
 	fout << endl;
-	fout << "\t include \\masm32\\include\\windows.inc" << endl;
-	fout << "\t include \\masm32\\include\\user32.inc" << endl;
-	fout << "\t include \\masm32\\include\\kernel32.inc" << endl;
-	fout << "\t include \\masm32\\include\\masm32.inc" << endl;
+	fout << "\t include \\masm32\\include\\msvcrt.inc" << endl;
 	fout << endl;
-	fout << "\t includelib \\masm32\\lib\\user32.lib" << endl;
-	fout << "\t includelib \\masm32\\lib\\kernel32.lib" << endl;
-	fout << "\t includelib \\masm32\\lib\\masm32.lib" << endl;
-
+	fout << "\t includelib \\masm32\\lib\\msvcrt.lib" << endl;
 	fout << endl << ".data" << endl;
 	fout.close();
 }
@@ -297,7 +291,7 @@ void ParseTree::gen_dec(TreeNode *node)
 			p = node->child[1];
 			while (p)
 			{
-				fout << "\t\t _" << symbol_table[p->address];
+				fout << "\t _" << symbol_table[p->address];
 				if (p->data_type == INT)
 					fout << " DWORD 0" << endl;
 				else if (p->data_type == CHAR)
@@ -310,13 +304,15 @@ void ParseTree::gen_dec(TreeNode *node)
 			break;
 	}
 	for (int i = 1; i <= temp_sum; i++)
-		fout << "\t\t t" << i << " DWORD 0" << endl;
-	fout << "\t\tszd db  '%d',0" << endl;
-	fout << "\t\tszc db  '%c',0" << endl;
-	fout << "\t\t buffer BYTE 128 dup(0)" << endl;
-	fout << "\t\t LF BYTE 13, 10, 0" << endl;
+		fout << "\t t" << i << " DWORD 0" << endl;
+
+	fout << "\t tip db   13,10,'Press any key to continue...',13,10,0" << endl;
+	fout << "\t data_d db  '%d',0" << endl;
+	fout << "\t data_c db  '%c',0" << endl;
+	fout << "\t buffer BYTE 128 dup(0)" << endl;
+	fout << "\t LF BYTE 13, 10, 0" << endl;//»»ÐÐ
 	fout << endl;
-	fout << "\t.code" << endl;
+	fout << ".code" << endl;
 	fout << "start:" << endl;
 	fout.close();
 }
@@ -329,7 +325,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 		return;
 	if (node->curr_label > 0)
 		fout << "L" << node->curr_label << ":" << endl;
-	
+
 	TreeNode *t1 = node->child[0];
 	TreeNode *t2 = node->child[1];
 
@@ -350,7 +346,7 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
-		else 
+		else
 			fout << "t" << t2->temp_num;
 		fout << endl;
 		fout << "\tMOV ";
@@ -372,13 +368,13 @@ void ParseTree::gen_expcode(TreeNode *node)
 			fout << "_" << symbol_table[t2->address];
 		else if (t2->type.exp_type == number)
 			fout << t2->attr.value;
-		else 
+		else
 			fout << "t" << t2->temp_num;
 		fout << endl;
 		fout << "\tjl " << "L" << node->true_label << endl;
 		fout << "\tjmp " << "L" << node->false_label << endl;
 		break;
-	//case 
+		//case 
 	}
 	fout.close();
 }
@@ -396,7 +392,7 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 
 	TreeNode *t1 = node->child[0];
 	TreeNode *t2 = node->child[1];
-	if (!t1 )
+	if (!t1)
 		return;
 	switch (node->type.stmt_type)
 	{
@@ -408,11 +404,10 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		}
 		break;
 	case while_stmt:
-		//fout << "L" << node->begin_label << " " << endl;
 		gen_code(t1);
 		gen_code(t2);
 		fout << "\tjmp " << "L" << node->curr_label << endl;
-		fout << "L" << node->child[0]->false_label << ":";// << endl;
+		fout << "L" << node->child[0]->false_label << ":";
 		break;
 	case if_stmt:
 		gen_code(t1);
@@ -449,9 +444,9 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		break;
 	case input_stmt:
 		if (t1->data_type == INT)
-			fout << "\tinvoke crt_scanf ,addr szd,addr _";
+			fout << "\tinvoke crt_scanf ,addr data_d,addr _";
 		else if (t1->data_type == CHAR)
-			fout << "\tinvoke crt_scanf ,addr szc,addr _";
+			fout << "\tinvoke crt_scanf ,addr data_c,addr _";
 		fout << t1->attr.name << endl;
 		fout << endl;
 		break;
@@ -462,10 +457,13 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		else if (t1->type.exp_type == number)
 			fout << t1->attr.value << endl;
 		if (t1->data_type == INT)
-			fout << "\tinvoke crt_printf ,addr szd,eax" << endl;
+			fout << "\tinvoke crt_printf ,addr data_d,eax" << endl;
 		if (t1->data_type == CHAR)
-			fout << "\tinvoke crt_printf ,addr szc,eax" << endl;
+			fout << "\tinvoke crt_printf ,addr data_c,eax" << endl;
 		fout << endl;
+
+		if (node->attr.op == ENDL)
+			fout << "\tinvoke crt_printf ,addr LF" << endl;
 		break;
 	default:
 		fout.close();
@@ -480,4 +478,17 @@ void ParseTree::gen_code(TreeNode *node)
 		gen_stmtcode(node);
 	else if (node->node_type == exps)// && (node->attr.op == OP_EXPR || node->kind_kind == NOT_EXPR))
 		gen_expcode(node);
+}
+
+void ParseTree::gen_end()
+{
+	ofstream fout("code.txt", ios::app);
+	if (!fout)
+		return;
+	fout << endl;
+	fout << "\tinvoke crt_printf,addr tip" << endl;
+	fout << "\tinvoke crt__getch" << endl;
+	fout << "\tinvoke crt__exit, 0" << endl;
+	fout << endl << "end start";
+	fout.close();
 }

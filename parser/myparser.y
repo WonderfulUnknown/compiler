@@ -417,7 +417,6 @@ while_stmt
 		//$$->child[1] = $6;
 		$$->child[1] = node->stmt_node(com_stmt);
 		$$->child[1]->child[0] = $6;
-	//	sprintf_s($6->curr_label,sizeof($6->curr_label), "L%d", tree.label_sum++);
 		$6->curr_label = tree.label_sum++;
 		$3->true_label = $6->curr_label;
 	}
@@ -433,7 +432,6 @@ for_stmt
 		$$->child[2] = $7;
 		$$->child[3] = node->stmt_node(com_stmt);
 		$$->child[3]->child[0] = $10;
-	//	sprintf_s($10->curr_label,sizeof($10->curr_label), "L%d", tree.label_sum++);
 		$10->curr_label = tree.label_sum++;
 		$$->true_label = $10->curr_label;
 	}
@@ -446,7 +444,6 @@ for_stmt
 		$$->child[3]= $10;
 		$$->child[3] = node->stmt_node(com_stmt);
 		$$->child[3]->child[0] = $10;
-	//	sprintf_s($10->curr_label,sizeof($10->curr_label), "L%d", tree.label_sum++);
 		$10->curr_label = tree.label_sum++;
 		$$->true_label = $10->curr_label;
 	}
@@ -506,6 +503,7 @@ int main(void)
 			tree.print_tree(tree.root);
 			tree.gen_dec(tree.root);
 			tree.gen_code(tree.root);
+			tree.gen_end();
 		}
 	}
 	system("pause");

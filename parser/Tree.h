@@ -89,4 +89,5 @@ struct ParseTree
 	void gen_stmtcode(TreeNode *node);
 	void gen_expcode(TreeNode *node);
 	void gen_code(TreeNode *node);
+	void gen_end();
 };
