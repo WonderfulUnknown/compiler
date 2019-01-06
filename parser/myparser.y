@@ -95,8 +95,6 @@ code
 		tree.root = $$;
 		if($1->type.stmt_type == while_stmt || $1->type.stmt_type == if_stmt)
 			$1->child[0]->false_label = tree.label_sum++;
-			//ofstream fout("code.txt", ios::app);
-			//fout << "L" << $1->child[0]->false_label << ":" << endl;
 		else if($1->type.stmt_type == for_stmt)
 			$1->child[1]->false_label = tree.label_sum++;
 	}

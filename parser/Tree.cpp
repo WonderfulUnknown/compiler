@@ -354,7 +354,25 @@ void ParseTree::gen_expcode(TreeNode *node)
 		fout << ", eax";
 		fout << endl;
 		break;
-	case LT://–°”⁄
+	case MUL:
+		fout << "\tMOV ebx, ";
+		if (t1->type.exp_type == id)
+			fout << "_" << symbol_table[t1->address];
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value;
+		else
+			fout << "t" << t1->temp_num;
+		fout << endl;
+
+		fout << "\tMUL ebx";
+
+		fout << endl;
+		fout << "\tMOV ";
+		fout << "t" << node->temp_num;
+		fout << ", eax";
+		fout << endl;
+		break;
+	case LT://<
 		fout << "\tMOV eax, ";
 		if (t1->type.exp_type == id)
 			fout << "_" << symbol_table[t1->address];
@@ -374,7 +392,26 @@ void ParseTree::gen_expcode(TreeNode *node)
 		fout << "\tjl " << "L" << node->true_label << endl;
 		fout << "\tjmp " << "L" << node->false_label << endl;
 		break;
-		//case 
+	case LE://<=
+		fout << "\tMOV eax, ";
+		if (t1->type.exp_type == id)
+			fout << "_" << symbol_table[t1->address];
+		else if (t1->type.exp_type == number)
+			fout << t1->attr.value;
+		else
+			fout << "t" << t1->temp_num;
+		fout << endl;
+		fout << "\tCMP eax, ";
+		if (t2->type.exp_type == id)
+			fout << "_" << symbol_table[t2->address];
+		else if (t2->type.exp_type == number)
+			fout << t2->attr.value;
+		else
+			fout << "t" << t2->temp_num;
+		fout << endl;
+		fout << "\tjle " << "L" << node->true_label << endl;
+		fout << "\tjmp " << "L" << node->false_label << endl;
+		break;
 	}
 	fout.close();
 }
@@ -407,7 +444,8 @@ void ParseTree::gen_stmtcode(TreeNode *node)
 		gen_code(t1);
 		gen_code(t2);
 		fout << "\tjmp " << "L" << node->curr_label << endl;
-		fout << "L" << node->child[0]->false_label << ":";
+		if(!node->brother)//±‹√‚»ﬂ”‡ ‰≥ˆ
+			fout << "L" << node->child[0]->false_label << ":";
 		break;
 	case if_stmt:
 		gen_code(t1);
